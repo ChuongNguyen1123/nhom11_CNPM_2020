@@ -1,5 +1,10 @@
 package model;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import database.ConnectionDB;
+
 public class Data1 extends Data {
 	private String dayOfWeek;
 	private String nameSubject1;
@@ -78,6 +83,21 @@ public class Data1 extends Data {
 	}
 
 	@Override
+	void insertData(String name) throws SQLException {
+		String preSQL = ("INSERT INTO " + name + " VALUES (?,?,?,?,?,?,?)");
+			PreparedStatement pre = ConnectionDB.connection.prepareStatement(preSQL);
+			pre.setString(1, dayOfWeek);
+			pre.setString(2, nameSubject1);
+			pre.setString(3, nameSubject2);
+			pre.setString(4, nameSubject3);
+			pre.setString(5, nameSubject4);
+			pre.setString(6, nameSubject5);
+			pre.setString(7, isMorning+"");
+			pre.execute();
+		
+	}
+
+	@Override
 	public String toString() {
 		return dayOfWeek + " , " + nameSubject1 + " , " + nameSubject2 + " , " + nameSubject3 + " , " + nameSubject4
 				+ " , " + nameSubject5 + ", " + isMorning;
@@ -103,5 +123,4 @@ public class Data1 extends Data {
 		System.out.println(Boolean.parseBoolean("YES"));
 		System.out.println(Boolean.valueOf("Y"));
 	}
-
 }

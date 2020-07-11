@@ -1,5 +1,7 @@
 package model;
 
-public abstract class Data {
+import java.sql.SQLException;
 
+public abstract class Data {
+	abstract void insertData(String name) throws SQLException;
 }

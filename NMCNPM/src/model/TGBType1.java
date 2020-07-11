@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,16 +29,28 @@ public class TGBType1 extends TGB {
 	@Override
 	void addData(String lineData) {
 		String[] split = lineData.split("\t");
-		listData.add(new Data1(split[0], split[1], split[2], split[3], split[4], split[5], Boolean.parseBoolean(split[6])));
+		listData.add(
+				new Data1(split[0], split[1], split[2], split[3], split[4], split[5], Boolean.parseBoolean(split[6])));
 	}
-@Override
-public String toString() {
-	StringBuffer result = new StringBuffer();
-	result.append(name + "\n");
-	for (Data1 d : listData) {
-		result.append(d + "\n" );
+
+	@Override
+	public String toString() {
+		StringBuffer result = new StringBuffer();
+		result.append("name " + name + "\n");
+		result.append("has alarm clock " + hasAlarmClock + "\n");
+		result.append("is Default display " + isDefaultDisplay + "\n");
+		for (Data1 d : listData) {
+			result.append(d + "\n");
+		}
+		result.append("\n");
+		return result.toString();
 	}
-	result.append("\n");
-	return result.toString();
-}
+
+	@Override
+	protected void insertData() throws SQLException {
+		for (Data1 data1 : listData) {
+			data1.insertData(name);
+		}
+
+	}
 }

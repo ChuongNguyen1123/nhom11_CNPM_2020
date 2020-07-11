@@ -3,19 +3,27 @@ package model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
+
+import database.ConnectionDB;
 
 public class Model {
 	private Time timeType3;
 	private TGB defaultTKB;
 	private boolean alarmClockStatus;
+	@SuppressWarnings("unused")
+	private ConnectionDB cdb;
 
-	public Model() {
+	public Model() throws ClassNotFoundException, SQLException {
 		super();
-		this.timeType3 = null;;
+		this.timeType3 = null;
 		this.defaultTKB = null;
 		this.alarmClockStatus = false;
+		cdb = new ConnectionDB();
 
 	}
 
@@ -63,13 +71,17 @@ public class Model {
 
 	}
 
-	public void importFromFilexlsx(String path) {
+	public void importFromFilexlsx(File input) {
 
 	}
 
-	public void importFromFiletgb(File input) throws Exception {
+	public boolean importFromFiletgb(File input) throws Exception {
+		TGB tgb = getTGBFromtgb(input);
+		return tgb.loadToDB();
+	}
+
+	private TGB getTGBFromtgb(File input) throws Exception {
 		String name = "";
-//		List<Data> data = null;
 		TGB tgb = null; // tạo 1 tgb để lưu vào
 		BufferedReader fileReader = new BufferedReader(new FileReader(input));
 		String line = "";
@@ -78,38 +90,41 @@ public class Model {
 			split = line.split("\t");
 
 			if (split[0].equalsIgnoreCase("@Name")) {
-//				tgb.setName(split[1]);
 				name = split[1];
 			}
 			if (split[0].equalsIgnoreCase("@Type")) {
 				if (split[1].equalsIgnoreCase("type 1")) {
 					tgb = new TGBType1(name);
-					while ((line = fileReader.readLine()) != null) {
-						tgb.addData(line);
-					}
-					break;
 				}
 				if (split[1].equalsIgnoreCase("type 2")) {
 					tgb = new TGBType2(name);
-					while ((line = fileReader.readLine()) != null) {
-						tgb.addData(line);
-					}
-					break;
 				}
 				if (split[1].equalsIgnoreCase("type 3")) {
 					tgb = new TGBType3(name);
-					while ((line = fileReader.readLine()) != null) {
-						tgb.addData(line);
-					}
-					break;
+				}
+			}
+			if (split[0].equalsIgnoreCase("@has Alarm clock")) {
+				tgb.setHasAlarmClock((Boolean.parseBoolean(split[1])));
+			}
+			if (split[0].equalsIgnoreCase("@is Deafult display")) {
+				tgb.setDefaultDisplay(Boolean.parseBoolean(split[1]));
+			}
+			if (split[0].equalsIgnoreCase("@Data")) {
+				while ((line = fileReader.readLine()) != null) {
+					tgb.addData(line);
 				}
 			}
 
 		}
 		System.out.println(tgb);
-fileReader.close();
+		fileReader.close();
+		return tgb;
 	}
 
+	public List<String> getListNameTGB(){
+		List<String> listName  = new ArrayList<String>();
+		return listName;
+	}
 	public Time getTimeType3(String name) {
 		return null;
 	}
@@ -121,9 +136,14 @@ fileReader.close();
 	public void showDefaultTKB() {
 
 	}
-public static void main(String[] args) throws Exception {
-	Model model = new Model();
-	File fileTest = new File("resource/a.txt");
-	model.importFromFiletgb(fileTest);
-}
+
+	public static void main(String[] args) throws Exception {
+		Model model = new Model();
+//		File fileTestA = new File("resource/a.txt");
+//		System.out.println(model.importFromFiletgb(fileTestA));
+//		File fileTestB = new File("resource/b.txt");
+//		model.importFromFiletgb(fileTestB);
+		File fileTestC = new File("resource/c.txt");
+		model.importFromFiletgb(fileTestC);
+	}
 }

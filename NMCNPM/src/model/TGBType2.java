@@ -1,7 +1,7 @@
 package model;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class TGBType2 extends TGB {
@@ -30,17 +30,28 @@ public class TGBType2 extends TGB {
 	@Override
 	void addData(String lineData) {
 		String[] split = lineData.split("\t");
-		listData.add(new Data2(split[0], split[1], split[2], split[3], split[4], Boolean.parseBoolean(split[6])));
+		listData.add(new Data2(split[0], split[1], split[2], split[3], split[4], Boolean.parseBoolean(split[5])));
 
 	}
+
 	@Override
 	public String toString() {
 		StringBuffer result = new StringBuffer();
-		result.append(name + "\n");
+		result.append("name " + name + "\n");
+		result.append("has alarm clock " + hasAlarmClock + "\n");
+		result.append("is Default display " + isDefaultDisplay + "\n");
 		for (Data2 d : listData) {
-			result.append(d + "\n" );
+			result.append(d + "\n");
 		}
 		result.append("\n");
 		return result.toString();
+	}
+
+	@Override
+	protected void insertData() throws SQLException {
+		for (Data2 data2 : listData) {
+			data2.insertData(name);
+		}
+
 	}
 }

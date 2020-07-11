@@ -1,7 +1,11 @@
 package model;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class Data3 extends Data{
+import database.ConnectionDB;
+
+public class Data3 extends Data {
 	private String dayOfWeek;
 	private String nameAction;
 	private String timeAction;
@@ -37,4 +41,21 @@ public class Data3 extends Data{
 		this.timeAction = timeAction;
 	}
 
+	@Override
+	void insertData(String name) throws SQLException {
+		String preSQL = ("INSERT INTO " + name + " VALUES (?,?,?)");
+		PreparedStatement pre = ConnectionDB.connection.prepareStatement(preSQL);
+		pre.setString(1, dayOfWeek);
+		pre.setString(2, nameAction);
+		pre.setString(3, timeAction);
+		pre.execute();
+
+
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return dayOfWeek + " , " + nameAction + " , " + timeAction;
+	}
 }
