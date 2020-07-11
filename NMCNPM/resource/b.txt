@@ -1,0 +1,9 @@
+@name	tkb2
+@type	type 2
+@has Alarm clock	false
+@is Deafult display	true
+@data
+1	Toan	HD501	hoá	PV201	true
+1	Sử	TL101	địa	TV104	false
+2	AV	CT105	TD	Y0	false
+2	Toán	PV101	Lý	HD204	true
