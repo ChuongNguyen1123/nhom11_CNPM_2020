@@ -1,8 +1,6 @@
 package view;
 
 import java.awt.Dimension;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -10,9 +8,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 public class MainView extends JFrame {
-	ViewListFile viewLF;
 	JMenu mFile, mOpen, mModify, mSetting;
 	JMenuItem miImportFromTGB, miImportFromXlsx, miExport;
+	ViewListFile viewListFile;
 
 	public MainView() {
 		gui();
@@ -26,12 +24,14 @@ public class MainView extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		viewListFile = new ViewListFile();
 
 	}
 
-	public ViewListFile getViewLF() {
-		return viewLF;
+	public ViewListFile getViewListFile() {
+		return viewListFile;
 	}
+
 
 	public JMenu getmFile() {
 		return mFile;

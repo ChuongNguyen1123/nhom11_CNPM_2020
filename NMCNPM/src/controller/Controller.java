@@ -2,10 +2,16 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import model.Model;
 import view.MainView;
@@ -29,7 +35,87 @@ public class Controller {
 	}
 
 	private void addAction() {
-		// importFromTGB action
+
+		importFromTGB();
+		buttonViewListFileAction();
+		actionViewListFile();
+		export();
+	}
+
+	private void buttonViewListFileAction() {
+		view.getViewListFile().getBtnExport().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				//
+				try {
+//					view.getViewListFile().setValuesList(model.getListName());
+
+					//
+					String selectName = (view.getViewListFile().getList().getSelectedValue());
+					JFileChooser chooser = new JFileChooser();
+
+					chooser.showSaveDialog(view);
+					String filePath = chooser.getSelectedFile().toString();
+//					System.out.println(filePath);
+					//
+
+					model.export(filePath, selectName);
+					view.getViewListFile().setVisible(false);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
+			}
+		});
+		view.getViewListFile().getBtnCancel().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				view.getViewListFile().setVisible(false);
+
+			}
+		});
+
+	}
+
+	// action menuItem export
+	private void export() {
+		// muốn export ra file tbk
+		view.getMiExport().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				view.getViewListFile().setVisible(true);
+				try {
+					view.getViewListFile().setValuesList(model.getListName());
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
+	}
+
+	public void actionViewListFile() {
+		view.getViewListFile().getList().addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				// TODO Auto-generated method stub
+//				System.out.println(view.getViewListFile().getList().getSelectedValue());
+
+			}
+		});
+
+	}
+
+	// importFromTGB action
+	private void importFromTGB() {
+
 		view.getMiImportFromTGB().addActionListener(new ActionListener() {
 
 			@Override

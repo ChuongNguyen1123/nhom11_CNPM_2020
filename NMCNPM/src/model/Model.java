@@ -1,10 +1,19 @@
 package model;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +60,53 @@ public class Model {
 		this.alarmClockStatus = alarmClockStatus;
 	}
 
-	public List<String> getListName() {
-		return null;
+	public List<String> getListName() throws SQLException {
+		List<String> listName = new ArrayList<String>();
+		String sqlConfig = "Select * from config ";
+		ResultSet rs = ConnectionDB.connection.createStatement().executeQuery(sqlConfig);
+		while (rs.next()) {
+			listName.add(rs.getNString("Name_TGB"));
+//			System.out.println(rs.getNString("Name_TGB"));
+		}
+
+		return listName;
 	}
 
-	public TGB getTKBFromName(String name) {
-		return null;
+	public TGB getTKBFromName(String name) throws SQLException {
+		String sqlConfig = "Select * from config where Name_TGB = ?";
+		PreparedStatement prs = ConnectionDB.connection.prepareStatement(sqlConfig);
+		prs.setString(1, name);
+		ResultSet rsConfig = prs.executeQuery();
+		rsConfig.next();
+//		System.out.println(rsConfig.getNString(1));
+		String type = rsConfig.getNString("Type_TGB");
+		TGB tgb = null;
+		if (type.contentEquals("Type 1")) {
+			tgb = new TGBType1(name);
+		}
+		if (type.contentEquals("Type 2")) {
+			tgb = new TGBType2(name);
+		}
+		if (type.contentEquals("Type 3")) {
+			tgb = new TGBType2(name);
+		}
+
+		tgb.setDefaultDisplay(rsConfig.getBoolean("Is_Default_Display"));
+		tgb.setHasAlarmClock(rsConfig.getBoolean("Has_Alarm_Clock"));
+		ResultSet rsTGB = ConnectionDB.connection.createStatement().executeQuery("Select *  From " + name);
+		while (rsTGB.next()) {
+			ResultSetMetaData rsmd = rsTGB.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			String data = "";
+			for (int i = 1; i <= columnCount; i++) {
+				data += rsTGB.getString(i) + "\t";
+			}
+			// xoá dấu \t cuối
+			data = data.substring(0, data.length() - 1);
+			tgb.addData(data);
+		}
+		System.out.println(tgb);
+		return tgb;
 	}
 
 	public void editTKB() {
@@ -67,8 +117,21 @@ public class Model {
 
 	}
 
-	public void exportToFile(String name, String path) {
+	public void export(String filePath, String nameTGB) throws Exception {
+//		String charset = "UTF-8"
+		FileOutputStream fo = new FileOutputStream(filePath);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+		writer.write("á àlkanlmamfamlfa");
+		TGB tgb = getTKBFromName(nameTGB);
 
+//		FileOutputStream writer = new FileOutputStream(new FileOutputStream("aa", true));
+//		out.w
+//		BufferedWriter writer = new BufferedWriter(
+//				new OutputStreamWriter(new FileOutputStream(new File(path)), charset));
+		writer.write("a a a ");
+		writer.write("b b b  ");
+		writer.flush();
+		writer.close();
 	}
 
 	public void importFromFilexlsx(File input) {
@@ -121,10 +184,6 @@ public class Model {
 		return tgb;
 	}
 
-	public List<String> getListNameTGB(){
-		List<String> listName  = new ArrayList<String>();
-		return listName;
-	}
 	public Time getTimeType3(String name) {
 		return null;
 	}
@@ -139,11 +198,19 @@ public class Model {
 
 	public static void main(String[] args) throws Exception {
 		Model model = new Model();
-//		File fileTestA = new File("resource/a.txt");
+		File fileTestA = new File("resource/a.txt");
 //		System.out.println(model.importFromFiletgb(fileTestA));
+//		model.getTKBFromName("tkb1");
 //		File fileTestB = new File("resource/b.txt");
 //		model.importFromFiletgb(fileTestB);
-		File fileTestC = new File("resource/c.txt");
-		model.importFromFiletgb(fileTestC);
+//		File fileTestC = new File("resource/c.txt");
+//		model.importFromFiletgb(fileTestC);
+//		model.export("demofile.txt", "G:\\");
+		List<String> lsn = model.getListName();
+		for (String s : lsn) {
+			System.out.println(s);
+			
+		}
+
 	}
 }

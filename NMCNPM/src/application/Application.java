@@ -1,6 +1,8 @@
 package application;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import controller.Controller;
 import model.Model;
@@ -12,6 +14,5 @@ public class Application {
 		MainView view = new MainView();
 		Model model = new Model();
 		Controller controller = new Controller(view, model);
-
 	}
 }
