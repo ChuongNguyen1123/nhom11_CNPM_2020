@@ -115,7 +115,7 @@ public class Model {
 //		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
 //		writer.write("á àlkanlmamfamlfa");
 		TGB tgb = getDataTGB(nameTGB);
-		tgb.exportToFile(filePath);
+		tgb.export(filePath);
 
 ////		FileOutputStream writer = new FileOutputStream(new FileOutputStream("aa", true));
 ////		out.w

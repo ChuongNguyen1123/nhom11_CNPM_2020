@@ -25,6 +25,9 @@ public class ViewListFile extends JFrame {
 	private JPanel contentPane;
 	DefaultListModel<String> defListModel;
 	JList<String> jList;
+	JPanel panel_1;
+	private JButton btnExport;
+	private JButton btnCancel;
 	public void setBtnExport(JButton btnExport) {
 		this.btnExport = btnExport;
 	}
@@ -33,9 +36,6 @@ public class ViewListFile extends JFrame {
 		this.btnCancel = btnCancel;
 	}
 
-	JPanel panel_1;
-	private JButton btnExport;
-	private JButton btnCancel;
 
 	public ViewListFile() {
 		setLayout(new BorderLayout());
@@ -105,13 +105,7 @@ public class ViewListFile extends JFrame {
 		return btnCancel;
 	}
 
-	public void showJChooser(List<String> listName) {
 
-	}
-
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		List<String> listS = new LinkedList<String>();
 		listS.add("name1");

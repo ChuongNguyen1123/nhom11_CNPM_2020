@@ -119,6 +119,6 @@ public abstract class TGB {
 
 	protected abstract void insertData() throws SQLException;
 
-	protected abstract void exportToFile(String filePath) throws IOException;
+	protected abstract void export(String filePath) throws IOException;
 
 }

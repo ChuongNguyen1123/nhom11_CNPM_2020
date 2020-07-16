@@ -52,7 +52,7 @@ public class TGBType3 extends TGB {
 
 	@SuppressWarnings("resource")
 	@Override
-	protected void exportToFile(String filePath) throws IOException {
+	protected void export(String filePath) throws IOException {
 		// tạo file
 		new FileOutputStream(filePath);
 		// đọc file
