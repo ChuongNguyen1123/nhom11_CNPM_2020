@@ -56,6 +56,6 @@ public class Data3 extends Data {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return dayOfWeek + " , " + nameAction + " , " + timeAction;
+		return dayOfWeek + "\t" + nameAction + "\t" + timeAction;
 	}
 }

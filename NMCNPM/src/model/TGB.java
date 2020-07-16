@@ -1,5 +1,6 @@
 package model;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,7 +54,7 @@ public abstract class TGB {
 		this.isDefaultDisplay = isDefaultDisplay;
 	}
 
-	protected boolean loadToDB() throws SQLException  {
+	protected boolean loadToDB() throws SQLException {
 		Connection conn = ConnectionDB.connection;
 		Statement state = conn.createStatement();
 		// kiểm tra xem có tkb nào trong db trùng tên vs nó chưa. nếu có thì trả về
@@ -63,7 +64,7 @@ public abstract class TGB {
 		// nếu trùng tên trong csdl thì return false, không load nữa --> import bị ngắt
 		if (rs.next()) {
 			System.out.println("có bảng như thế tồn tại, không import");
-			System.out.println("tên bảng trùng :" +  rs.getString(1) );
+			System.out.println("tên bảng trùng :" + rs.getString(1));
 			return false;
 		}
 		System.out.println("có thể tạo mới , import");
@@ -117,5 +118,7 @@ public abstract class TGB {
 	}
 
 	protected abstract void insertData() throws SQLException;
+
+	protected abstract void exportToFile(String filePath) throws IOException;
 
 }

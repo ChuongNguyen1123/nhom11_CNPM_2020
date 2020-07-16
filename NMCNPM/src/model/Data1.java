@@ -99,8 +99,8 @@ public class Data1 extends Data {
 
 	@Override
 	public String toString() {
-		return dayOfWeek + " , " + nameSubject1 + " , " + nameSubject2 + " , " + nameSubject3 + " , " + nameSubject4
-				+ " , " + nameSubject5 + ", " + isMorning;
+		return dayOfWeek + "\t" + nameSubject1 + "\t" + nameSubject2 + "\t" + nameSubject3 + "\t" + nameSubject4
+				+ "\t" + nameSubject5 +"\t" + isMorning;
 	}
 
 	public static void main(String args[]) { // parseBoolean returns a boolean primitive value

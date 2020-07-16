@@ -88,7 +88,7 @@ public class Data2 extends Data {
 
 	@Override
 	public String toString() {
-		return dayOfWeek + " , " + nameSubject1 + " ," + room1 + " , " + nameSubject2 + " , " + room2 + " , "
+		return dayOfWeek + "\t" + nameSubject1 + "\t" + room1 + "\t" + nameSubject2 + "\t" + room2 + "\t"
 				+ isMorning;
 	}
 

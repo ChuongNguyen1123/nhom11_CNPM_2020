@@ -1,15 +1,8 @@
 package model;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -88,7 +81,7 @@ public class Model {
 			tgb = new TGBType2(name);
 		}
 		if (type.contentEquals("Type 3")) {
-			tgb = new TGBType2(name);
+			tgb = new TGBType3(name);
 		}
 
 		tgb.setDefaultDisplay(rsConfig.getBoolean("Is_Default_Display"));
@@ -105,7 +98,7 @@ public class Model {
 			data = data.substring(0, data.length() - 1);
 			tgb.addData(data);
 		}
-		System.out.println(tgb);
+//		System.out.println(tgb);
 		return tgb;
 	}
 
@@ -118,20 +111,20 @@ public class Model {
 	}
 
 	public void export(String filePath, String nameTGB) throws Exception {
-//		String charset = "UTF-8"
-		FileOutputStream fo = new FileOutputStream(filePath);
-		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-		writer.write("á àlkanlmamfamlfa");
+//		FileOutputStream fo = new FileOutputStream(filePath);
+//		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+//		writer.write("á àlkanlmamfamlfa");
 		TGB tgb = getTKBFromName(nameTGB);
+		tgb.exportToFile(filePath);
 
-//		FileOutputStream writer = new FileOutputStream(new FileOutputStream("aa", true));
-//		out.w
-//		BufferedWriter writer = new BufferedWriter(
-//				new OutputStreamWriter(new FileOutputStream(new File(path)), charset));
-		writer.write("a a a ");
-		writer.write("b b b  ");
-		writer.flush();
-		writer.close();
+////		FileOutputStream writer = new FileOutputStream(new FileOutputStream("aa", true));
+////		out.w
+////		BufferedWriter writer = new BufferedWriter(
+////				new OutputStreamWriter(new FileOutputStream(new File(path)), charset));
+//		writer.write("a a a ");
+//		writer.write("b b b  ");
+//		writer.flush();
+//		writer.close();
 	}
 
 	public void importFromFilexlsx(File input) {
@@ -197,8 +190,8 @@ public class Model {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Model model = new Model();
-		File fileTestA = new File("resource/a.txt");
+//		Model model = new Model();
+//		File fileTestA = new File("resource/a.txt");
 //		System.out.println(model.importFromFiletgb(fileTestA));
 //		model.getTKBFromName("tkb1");
 //		File fileTestB = new File("resource/b.txt");
@@ -206,11 +199,11 @@ public class Model {
 //		File fileTestC = new File("resource/c.txt");
 //		model.importFromFiletgb(fileTestC);
 //		model.export("demofile.txt", "G:\\");
-		List<String> lsn = model.getListName();
-		for (String s : lsn) {
-			System.out.println(s);
-			
-		}
+//		List<String> lsn = model.getListName();
+//		for (String s : lsn) {
+//			System.out.println(s);
+//			
+//		}
 
 	}
 }

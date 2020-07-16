@@ -1,5 +1,9 @@
 package model;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,4 +58,24 @@ public class TGBType2 extends TGB {
 		}
 
 	}
+
+	@SuppressWarnings("resource")
+	@Override
+	protected void exportToFile(String filePath) throws IOException {
+		// tạo file
+		new FileOutputStream(filePath);
+		// đọc file
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+		writer.write("@name" + "\t" + name + "\n");
+		writer.write("@type" + "\t" + "type 2" + "\n");
+		writer.write("@has Alarm clock" + "\t" + hasAlarmClock + "\n");
+		writer.write("@is Deafult display" + "\t" + isDefaultDisplay + "\n");
+		writer.write("@data" + "\n");
+		for (Data2 d : listData) {
+			writer.write(d.toString() + "\n");
+		}
+		writer.flush();
+		writer.close();
+	}
+
 }
