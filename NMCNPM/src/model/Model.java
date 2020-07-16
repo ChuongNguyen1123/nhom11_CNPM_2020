@@ -53,7 +53,7 @@ public class Model {
 		this.alarmClockStatus = alarmClockStatus;
 	}
 
-	public List<String> getListName() throws SQLException {
+	public List<String> getListNameTGB() throws SQLException {
 		List<String> listName = new ArrayList<String>();
 		String sqlConfig = "Select * from config ";
 		ResultSet rs = ConnectionDB.connection.createStatement().executeQuery(sqlConfig);
@@ -65,7 +65,7 @@ public class Model {
 		return listName;
 	}
 
-	public TGB getTKBFromName(String name) throws SQLException {
+	public TGB getDataTGB(String name) throws SQLException {
 		String sqlConfig = "Select * from config where Name_TGB = ?";
 		PreparedStatement prs = ConnectionDB.connection.prepareStatement(sqlConfig);
 		prs.setString(1, name);
@@ -114,7 +114,7 @@ public class Model {
 //		FileOutputStream fo = new FileOutputStream(filePath);
 //		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
 //		writer.write("á àlkanlmamfamlfa");
-		TGB tgb = getTKBFromName(nameTGB);
+		TGB tgb = getDataTGB(nameTGB);
 		tgb.exportToFile(filePath);
 
 ////		FileOutputStream writer = new FileOutputStream(new FileOutputStream("aa", true));
