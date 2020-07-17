@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 
 
 public class ViewDatamodelTGB extends JFrame { //nguyen 
-	//cái  này chắc sai bét nhè rồi 
+	//cái  này chắc sai bét nhè rồi ông xoá hết nha 
 	  
 	   ;
 	    ArrayList<Contact> contactsList;
