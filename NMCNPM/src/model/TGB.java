@@ -15,6 +15,12 @@ public abstract class TGB {
 	protected boolean hasAlarmClock;
 	protected boolean isDefaultDisplay;
 
+	public TGB() {
+		this.name = "";
+		this.hasAlarmClock = false;
+		this.isDefaultDisplay = false;
+	}
+
 	public TGB(String name) {
 		this.name = name;
 		this.hasAlarmClock = false;
@@ -26,7 +32,7 @@ public abstract class TGB {
 		this.name = name;
 	}
 
-	abstract void addData(String lineData);
+	public abstract void addData(String lineData);
 
 	abstract void editTKB(TGB tbkEdited);
 
@@ -54,7 +60,7 @@ public abstract class TGB {
 		this.isDefaultDisplay = isDefaultDisplay;
 	}
 
-	protected boolean loadToDB() throws SQLException {
+	public boolean loadToDB() throws SQLException {
 		Connection conn = ConnectionDB.connection;
 		Statement state = conn.createStatement();
 		// kiểm tra xem có tkb nào trong db trùng tên vs nó chưa. nếu có thì trả về
@@ -72,6 +78,7 @@ public abstract class TGB {
 		if (this instanceof TGBType1) {
 			ResultSet rsGetSQl = state.executeQuery("SELECT * FROM DEFINE WHERE Type_TGB = 1");
 			rsGetSQl.next();
+			System.out.println("query " + rsGetSQl.getString("SQL_Create"));
 			String sqlCreate = "CREATE TABLE " + name + rsGetSQl.getString("SQL_Create");
 			state.execute(sqlCreate);
 			insertData();
@@ -119,6 +126,6 @@ public abstract class TGB {
 
 	protected abstract void insertData() throws SQLException;
 
-	protected abstract void export(String filePath) throws IOException;
+	public abstract void export(String filePath) throws IOException;
 
 }

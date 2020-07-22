@@ -15,6 +15,7 @@ public class TGBType1 extends TGB {
 	public TGBType1(String name) {
 		super(name);
 		listData = new LinkedList<Data1>();
+		hasAlarmClock = false;
 	}
 
 	@Override
@@ -31,7 +32,8 @@ public class TGBType1 extends TGB {
 	}
 
 	@Override
-	void addData(String lineData) {
+	public void addData(String lineData) {
+		System.out.println(lineData);
 		String[] split = lineData.split("\t");
 		listData.add(
 				new Data1(split[0], split[1], split[2], split[3], split[4], split[5], Boolean.parseBoolean(split[6])));
@@ -57,11 +59,12 @@ public class TGBType1 extends TGB {
 		}
 
 	}
+
 	@SuppressWarnings("resource")
 	@Override
-	protected void export(String filePath) throws IOException {
+	public  void export(String filePath) throws IOException {
 		// tạo file
-		new FileOutputStream(filePath);
+		FileOutputStream f = new FileOutputStream(filePath);
 		// đọc file
 		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
 		writer.write("@name" + "\t" + name + "\n");
@@ -74,5 +77,6 @@ public class TGBType1 extends TGB {
 		}
 		writer.flush();
 		writer.close();
+		f.close();
 	}
 }

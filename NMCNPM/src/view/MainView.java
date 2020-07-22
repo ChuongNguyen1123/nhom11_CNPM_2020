@@ -9,13 +9,38 @@ import javax.swing.JMenuItem;
 
 public class MainView extends JFrame {
 	JMenu mFile, mOpen, mModify, mSetting;
-	JMenuItem miImportFromTGB, miImportFromXlsx, miExport;
+	JMenuItem miCreate, miImportFromTGB, miImportFromXlsx, miExport;
 	ViewListFile viewListFile;
+	ChooseTypeTGB chooseTypeTGB;
+
 
 	public MainView() {
+		viewListFile = new ViewListFile();
+		chooseTypeTGB = new ChooseTypeTGB();
+
 		gui();
 		createMenu();
 	}
+
+	public ChooseTypeTGB getChooseTypeTGB() {
+		return chooseTypeTGB;
+	}
+
+//	public void setTableDataType3(TableTGBType3 tableDataType3) {
+//		this.tableDataType3 = tableDataType3;
+//	}
+//
+//	public TableTGBType3 getTableDataType3() {
+//		return tableDataType3;
+//	}
+//
+//	public TableTGBType2 getTableDataType2() {
+//		return tableDataType2;
+//	}
+//
+//	public TableTGBType1 getTableDataType1() {
+//		return tableDataType1;
+//	}
 
 	private void gui() {
 		setTitle("Main View");
@@ -24,14 +49,12 @@ public class MainView extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
-		viewListFile = new ViewListFile();
 
 	}
 
 	public ViewListFile getViewListFile() {
 		return viewListFile;
 	}
-
 
 	public JMenu getmFile() {
 		return mFile;
@@ -69,10 +92,12 @@ public class MainView extends JFrame {
 		mModify = new JMenu("Modify");
 		mSetting = new JMenu("Setting");
 		// create menuItem
+		miCreate = new JMenuItem("Create New");
 		miImportFromTGB = new JMenuItem("ImportFromTGB");
 		miImportFromXlsx = new JMenuItem("Iport From XLSX");
 		miExport = new JMenuItem("Export");
 		// add menu item, menu
+		mFile.add(miCreate);
 		mFile.add(miImportFromTGB);
 		mFile.add(miImportFromXlsx);
 		mFile.add(miExport);
@@ -86,7 +111,11 @@ public class MainView extends JFrame {
 
 	}
 
-	public static void main(String[] args) {
-		MainView mv = new MainView();
+	public JMenuItem getMiCreate() {
+		return miCreate;
 	}
+
+//	public static void main(String[] args) {
+//		MainView mv = new MainView();
+//	}
 }

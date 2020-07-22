@@ -32,7 +32,7 @@ public class TGBType2 extends TGB {
 	}
 
 	@Override
-	void addData(String lineData) {
+	public void addData(String lineData) {
 		String[] split = lineData.split("\t");
 		listData.add(new Data2(split[0], split[1], split[2], split[3], split[4], Boolean.parseBoolean(split[5])));
 
@@ -61,9 +61,9 @@ public class TGBType2 extends TGB {
 
 	@SuppressWarnings("resource")
 	@Override
-	protected void export(String filePath) throws IOException {
+	public  void export(String filePath) throws IOException {
 		// tạo file
-		new FileOutputStream(filePath);
+		FileOutputStream f = new FileOutputStream(filePath);
 		// đọc file
 		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
 		writer.write("@name" + "\t" + name + "\n");
@@ -76,6 +76,7 @@ public class TGBType2 extends TGB {
 		}
 		writer.flush();
 		writer.close();
+		f.close();
 	}
 
 }

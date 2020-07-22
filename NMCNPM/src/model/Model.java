@@ -3,6 +3,7 @@ package model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -10,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.table.TableModel;
 
 import database.ConnectionDB;
 
@@ -58,8 +61,8 @@ public class Model {
 		String sqlConfig = "Select * from config ";
 		ResultSet rs = ConnectionDB.connection.createStatement().executeQuery(sqlConfig);
 		while (rs.next()) {
-			listName.add(rs.getNString("Name_TGB"));
-//			System.out.println(rs.getNString("Name_TGB"));
+			listName.add(rs.getString("Name_TGB"));
+//			System.out.println(rs.getString("Name_TGB"));
 		}
 
 		return listName;
@@ -71,8 +74,8 @@ public class Model {
 		prs.setString(1, name);
 		ResultSet rsConfig = prs.executeQuery();
 		rsConfig.next();
-//		System.out.println(rsConfig.getNString(1));
-		String type = rsConfig.getNString("Type_TGB");
+//		System.out.println(rsConfig.getString(1));
+		String type = rsConfig.getString("Type_TGB");
 		TGB tgb = null;
 		if (type.contentEquals("Type 1")) {
 			tgb = new TGBType1(name);
@@ -110,21 +113,18 @@ public class Model {
 
 	}
 
-	public void export(String filePath, String nameTGB) throws Exception {
-//		FileOutputStream fo = new FileOutputStream(filePath);
-//		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-//		writer.write("á àlkanlmamfamlfa");
-		TGB tgb = getDataTGB(nameTGB);
-		tgb.export(filePath);
+	public boolean export(String filePath, String nameTGB) {
 
-////		FileOutputStream writer = new FileOutputStream(new FileOutputStream("aa", true));
-////		out.w
-////		BufferedWriter writer = new BufferedWriter(
-////				new OutputStreamWriter(new FileOutputStream(new File(path)), charset));
-//		writer.write("a a a ");
-//		writer.write("b b b  ");
-//		writer.flush();
-//		writer.close();
+		try {
+
+			TGB tgb;
+			tgb = getDataTGB(nameTGB);
+			tgb.export(filePath);
+		} catch (SQLException | IOException e) {
+			return false;
+		}
+		return true;
+
 	}
 
 	public void importFromFilexlsx(File input) {
@@ -187,6 +187,23 @@ public class Model {
 
 	public void showDefaultTKB() {
 
+	}
+
+	public TGB getDataModel(TableModel def1, TableModel def2) {
+		for (int i = 0; i < 5; i++) {
+			System.out.println();
+			for (int j = 0; j < 7; j++) {
+				System.out.print(def1.getValueAt(i, j) + "\t");
+			}
+		}
+		System.out.println("===========");
+		for (int i = 0; i < 5; i++) {
+			System.out.println();
+			for (int j = 0; j < 7; j++) {
+				System.out.print(def2.getValueAt(i, j) + "\t");
+			}
+		}
+		return null;
 	}
 
 	public static void main(String[] args) throws Exception {
