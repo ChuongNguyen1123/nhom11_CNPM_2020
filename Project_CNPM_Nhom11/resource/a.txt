@@ -1,0 +1,9 @@
+@name	tkb1
+@type	type 1
+@has Alarm clock	false
+@is Deafult display	true
+@data
+1	Toan	lý	hoá	sinh	null	true
+1	Sử	null	null	null	null	false
+2	AV	địa	null	null	null	false
+2	Toán	Toán	null	null	null	true
