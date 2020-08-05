@@ -10,9 +10,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -32,7 +35,7 @@ public class ChooseTypeTGB extends JFrame {
 	 * Create the frame.
 	 */
 	public ChooseTypeTGB() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,7 +99,7 @@ public class ChooseTypeTGB extends JFrame {
 	}
 
 	private void addModels() {
-			try {
+		try {
 			JScrollPane scrollPane = new JScrollPane();
 			contentPane.add(scrollPane, BorderLayout.CENTER);
 			JPanel mainPanel = new JPanel();
