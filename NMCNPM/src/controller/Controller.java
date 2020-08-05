@@ -3,6 +3,7 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +34,16 @@ public class Controller {
 		this.model = model;
 		addAction();
 	}
-
-	private void importTGB(File file) throws Exception {
+	// Bước 6 của import
+	private void importFromFileTGB(File file) throws Exception {
 //		boolean isSuccess = model.importFromFiletgb(file);
 		String mess = (model.importFromFiletgb(file)) ? "import success" : " error, can't import";
 		JOptionPane.showMessageDialog(view, mess);
 
 	}
 
-	private void importXlSX(File inputFile) throws Exception {
+	// Bước 6 của import
+	private void importFromFileXlSX(File inputFile) throws Exception {
 //		boolean isSuccess = model.importFromFiletgb(file);
 		String mess = (model.importFromFilexlsx(inputFile)) ? "import success" : " error, can't import";
 		JOptionPane.showMessageDialog(view, mess);
@@ -50,18 +52,21 @@ public class Controller {
 
 	private void addAction() {
 
-		importFromTGB();
-		importFromXLSX();
-		buttonViewListFileAction();
-		export();
-		addActionCreate();
-		addActionDataType1();
-		addActionDataType2();
-		addActionDataType3();
-		addActionChooseType();
+		actionImportFromFileTGB();
+		actionImportFromFileXLSX();
+		actionButtonViewListFile();
+		actionExport();
+		actionCreate();
+		actionDataType1();
+		actionDataType2();
+		actionDataType3();
+		actionChooseType();
+		addActionBtnVLNTGB();
+		addActionbtnXemTGB();
+		addActionMenuBar();
 	}
-
-	private void addActionChooseType() {
+	// bước 6 creat new 
+	private void actionChooseType() {
 		ChooseTypeTGB choosed = view.getChooseTypeTGB();
 		choosed.getBtnNewButton_1().addActionListener(new ActionListener() {
 
@@ -95,8 +100,8 @@ public class Controller {
 		});
 
 	}
-
-	private void buttonViewListFileAction() {
+	// Bước 7 của export
+	private void actionButtonViewListFile() {
 		view.getViewListFile().getBtnExport().addActionListener(new ActionListener() {
 
 			@Override
@@ -137,7 +142,7 @@ public class Controller {
 	}
 
 	// action menuItem export
-	private void export() {
+	private void actionExport() {
 		// muốn export ra file tbk
 		view.getMiExport().addActionListener(new ActionListener() {
 
@@ -153,8 +158,8 @@ public class Controller {
 		});
 
 	}
-
-	private void addActionCreate() {
+	// Bước 4 creat new 
+	private void actionCreate() {
 		view.getMiCreate().addActionListener(new ActionListener() {
 
 			@Override
@@ -165,7 +170,8 @@ public class Controller {
 	}
 
 	// importFromTGB action
-	private void importFromTGB() {
+	// Bước 4 của import
+	private void actionImportFromFileTGB() {
 
 		view.getMiImportFromTGB().addActionListener(new ActionListener() {
 
@@ -178,7 +184,7 @@ public class Controller {
 				if (open == JFileChooser.APPROVE_OPTION) {
 //					try {
 					try {
-						importTGB(inputFile);
+						importFromFileTGB(inputFile);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -186,8 +192,8 @@ public class Controller {
 			}
 		});
 	}
-
-	private void importFromXLSX() {
+	// Bước 4 của import
+	private void actionImportFromFileXLSX() {
 		view.getMiImportFromXlsx().addActionListener(new ActionListener() {
 
 			@Override
@@ -198,7 +204,7 @@ public class Controller {
 				if (open == JFileChooser.APPROVE_OPTION) {
 //					try {
 					try {
-						importXlSX(inputFile);
+						importFromFileXlSX(inputFile);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -208,8 +214,8 @@ public class Controller {
 		});
 
 	}
-
-	private void addActionDataType1() {
+	// Bước 7 của creat new
+	private void actionDataType1() {
 		TableTGBType1 tableDataType1 = view.getChooseTypeTGB().getTableDataType1();
 		tableDataType1.getBtnSave().addActionListener(new ActionListener() {
 
@@ -261,8 +267,8 @@ public class Controller {
 			}
 		});
 	}
-
-	private void addActionDataType2() {
+	// Bước 7 của creat new
+	private void actionDataType2() {
 		TableTGBType2 tableDataType2 = view.getChooseTypeTGB().getTableDataType2();
 		tableDataType2.getBtnSave().addActionListener(new ActionListener() {
 
@@ -314,8 +320,8 @@ public class Controller {
 			}
 		});
 	}
-
-	private void addActionDataType3() {
+	// Bước 7 của creat new
+	private void actionDataType3() {
 		TableTGBType3 tableDataType3 = view.getChooseTypeTGB().getTableDataType3();
 		tableDataType3.getBtnSave().addActionListener(new ActionListener() {
 
@@ -358,5 +364,182 @@ public class Controller {
 			}
 		});
 	}
+	
+	private void addActionMenuBar() {
+//		******** Chuong ***********
+//		click menubar openTGB chuyen sang giao dien hien danh sach name tgb duoi DB
+		view.getMiOpen().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+//					lay list name duoi DB nho lop model goi phuong thuc getListNameTGB
+//					Sau do dua vao tung hang trong table tren giao dien
+					List<String> listNameTGB = model.getListNameTGB();
+					for (int i = 0; i < listNameTGB.size(); i++) {
+						// add row, số row sẽ tương đương với số dòng của table config
+						view.getViewListNameTGB().getModel().addRow(new Object[0]);
+						// set dữ liệu cho cột 0
+						view.getViewListNameTGB().getModel().setValueAt(listNameTGB.get(i), i, 0);
+						// set dữ liệu cho cột 1
+						view.getViewListNameTGB().getModel().setValueAt(false, i, 1);
+//					chuyen giao dien
+						view.getViewListNameTGB().setVisible(true);
+						view.closed();
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
+//		**********************************************
+	}
+	
+	//********** Chuong ***********************
+//	add action button xoa ben lop viewlistnameTGB
+	public void addActionBtnVLNTGB() {
+		view.getViewListNameTGB().getBtXoa().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+//					Khởi tạo mảng list chứa các dòng đã chọn 
+					List<Integer> list = new ArrayList<Integer>();
+// 					Duyệt các dòng của table, add vào mảng list những dòng có dấu check ở cột 1
+					for (int i = 0; i < view.getViewListNameTGB().getTable().getRowCount(); i++) {
+						boolean check = Boolean.valueOf(view.getViewListNameTGB().getTable().getValueAt(i, 1).toString());
+						if (check) {
+							list.add(i);
+						}
+					}
+
+//					Duyệt mảng list để lấy ra tên tgb dựa vào vị trí của dòng check
+					for (int i = 0; i < list.size(); i++) {
+						String nameTGB = view.getViewListNameTGB().getModel().getValueAt(list.get(i), 0).toString();
+//						Xóa dòng của table
+						view.getViewListNameTGB().getModel().removeRow(list.get(i));
+//						xóa tên va bang TGB dưới DB, goi lop remove ben model
+						model.removeTKB(nameTGB);
+// 						xét lại mảng list sao khi xóa
+						for (int j = i + 1; j < list.size(); j++) {
+							list.set(j, list.get(j) - 1);
+						}
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
+	}
+//	********************************************************************
+
+	public void addActionbtnXemTGB() {		
+		view.getViewListNameTGB().getBtXem().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				List<Integer> listCheck = new ArrayList<Integer>();
+				for (int i = 0; i < view.getViewListNameTGB().getTable().getRowCount(); i++) {
+					boolean check = Boolean.valueOf(view.getViewListNameTGB().getTable().getValueAt(i, 1).toString());
+					if (check) {
+						listCheck.add(i);
+					}
+				}
+				if(listCheck.size()>1) {
+					JOptionPane.showMessageDialog(view.getViewListNameTGB(), "Chi duoc xem 1 table!");
+				}else if(listCheck.size()<1) {
+					JOptionPane.showMessageDialog(view.getViewListNameTGB(), "Hay check vao o ben canh ten table muon xem!");
+				}else if(listCheck.size()==1) {
+					String nameTGB = view.getViewListNameTGB().getModel().getValueAt(listCheck.get(0), 0).toString();
+					try {
+						ResultSet rsTableTGB = model.getTableTGB(nameTGB);
+						int rowSang = 0;
+						int rowChieu = 4;
+						int caSang = 1;
+						int caChieu = 1;
+						int rowType3 = 0;
+						while(rsTableTGB.next()) {
+							if(rsTableTGB.getString("Type_TGB").equals("Type 1")) {
+								if(rsTableTGB.getString("IsMorning").equals("false")) {
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("Ca " + caChieu, rowChieu, 0);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject1"), rowChieu, 1);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject2"), rowChieu, 2);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject3"), rowChieu, 3);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject4"), rowChieu, 4);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject5"), rowChieu, 5);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowChieu, 6);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowChieu, 7);
+									rowChieu++;
+									caChieu ++;
+								}else {
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("Ca " + caSang, rowSang, 0);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject1"), rowSang, 1);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject2"), rowSang, 2);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject3"), rowSang, 3);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject4"), rowSang, 4);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject5"), rowSang, 5);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowSang, 6);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowSang, 7);
+									rowSang++;
+									caSang ++;
+								}
+							}else if(rsTableTGB.getString("Type_TGB").equals("Type 2")){
+								if(rsTableTGB.getString("IsMorning").equals("false")) {
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("Ca " + caChieu, rowChieu, 0);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject1") + " --> " + rsTableTGB.getString("RoomSubject1"), rowChieu, 1);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject2") + " --> " + rsTableTGB.getString("RoomSubject2"), rowChieu, 2);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowChieu, 3);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowChieu, 4);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowChieu, 5);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowChieu, 6);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowChieu, 7);
+									rowChieu++;
+									caChieu ++;
+								}else {
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("Ca " + caSang, rowSang, 0);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject1") + " --> " + rsTableTGB.getString("RoomSubject1"), rowSang, 1);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject2") + " --> " + rsTableTGB.getString("RoomSubject2"), rowSang, 2);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowSang, 3);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowSang, 4);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowSang, 5);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowSang, 6);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowSang, 7);
+									rowSang++;
+									caSang ++;
+								}
+							}else if(rsTableTGB.getString("Type_TGB").equals("Type 3")) {
+								view.getViewListNameTGB().getViewTableTGB().getP().remove(view.getViewListNameTGB().getViewTableTGB().getLblChieu());
+								view.getViewListNameTGB().getViewTableTGB().getP().remove(view.getViewListNameTGB().getViewTableTGB().getLblSang());
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("TimeSubject"), rowType3, 0);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt(rsTableTGB.getString("NameSubject"), rowType3, 1);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowType3, 2);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowType3, 3);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowType3, 4);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowType3, 5);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowType3, 6);
+									view.getViewListNameTGB().getViewTableTGB().getModel().setValueAt("null", rowType3, 7);
+									rowType3++;
+									
+							}
+			
+						}
+						view.getViewListNameTGB().getViewTableTGB().setVisible(true);
+						view.getViewListNameTGB().getViewTableTGB().setTitle(nameTGB);
+						view.getViewListNameTGB().closed();
+					} catch (ClassNotFoundException | SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+			}
+		});
+	}
+
 
 }

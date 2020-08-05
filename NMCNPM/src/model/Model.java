@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -33,10 +34,9 @@ public class Model {
 	private Time timeType3;
 	private TGB defaultTKB;
 	private boolean alarmClockStatus;
-	@SuppressWarnings("unused")
 	private ConnectionDB cdb;
 
-	public Model() {
+	public Model() throws ClassNotFoundException, SQLException {
 		super();
 		this.timeType3 = null;
 		this.defaultTKB = null;
@@ -109,7 +109,7 @@ public class Model {
 			for (int i = 1; i <= columnCount; i++) {
 				data += rsTGB.getString(i) + "\t";
 			}
-			// xoá dấu \t cuối
+			// xoÃ¡ dáº¥u \t cuá»‘i
 			data = data.substring(0, data.length() - 1);
 			tgb.addData(data);
 		}
@@ -117,14 +117,30 @@ public class Model {
 		return tgb;
 	}
 
+	public ResultSet getTableTGB(String nameTGB) throws ClassNotFoundException, SQLException {
+		Connection connectTableTGB = cdb.getConnection();
+		String sqlTableTGB = "SELECT * FROM config c, " + nameTGB + " WHERE c.Name_TGB =  '" + nameTGB + "'";
+		PreparedStatement preTableTGB = connectTableTGB.prepareStatement(sqlTableTGB);
+		ResultSet rsTableTGB = preTableTGB.executeQuery();
+		return rsTableTGB;
+	}
+
 	public void editTKB() {
 
 	}
 
-	public void removeTKB(String name) {
+	public void removeTKB(String nameTGB) throws ClassNotFoundException, SQLException {
+		Connection connectionRemove = cdb.getConnection();
+		String sqlRemove = "DELETE FROM config WHERE Name_TGB = '" + nameTGB + "'";
+		PreparedStatement preRemove = connectionRemove.prepareStatement(sqlRemove);
+		preRemove.executeUpdate();
 
+		String sqlXoaBang = " DROP TABLE " + nameTGB;
+		PreparedStatement preXB = connectionRemove.prepareStatement(sqlXoaBang);
+		preXB.executeUpdate();
+		connectionRemove.close();
 	}
-
+// Bươc 9 của export
 	public boolean export(String filePath, String nameTGB) {
 
 		try {
@@ -139,14 +155,22 @@ public class Model {
 
 	}
 
+	// Bước 7 của import
 	public boolean importFromFilexlsx(File input) throws Exception {
+		TGBType2 tgb = getTGBFromXLSX(input);
+
+		return tgb.loadToDB();
+
+	}
+
+	private TGBType2 getTGBFromXLSX(File input) {
 		ArrayList<String> nameSubjects = new ArrayList<String>();
 		ArrayList<String> dayOfWeeks = new ArrayList<String>();
 		ArrayList<String> startTimes = new ArrayList<String>();
 		ArrayList<String> addressRooms = new ArrayList<String>();
 		TGBType2 tgb = new TGBType2("");
 		try {
-			// import từ file xlsx là loại 2.
+			// import tá»« file xlsx lÃ  loáº¡i 2.
 			FileInputStream fileStream = new FileInputStream(input);
 
 //			HSSFWorkbook wb = new HSSFFWorkbook(fileStream);
@@ -158,30 +182,30 @@ public class Model {
 			// cell name at J7 ( mssv)
 			CellReference cellReference = new CellReference("I7");
 			Cell cellName = sheet.getRow(cellReference.getRow()).getCell(cellReference.getCol());
-			tgb.setName("SV_"+cellName.getStringCellValue());
+			tgb.setName("SV_" + cellName.getStringCellValue());
 
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
-				// chạy từ dòng 14
+				// cháº¡y tá»« dÃ²ng 14
 				if (nextRow.getRowNum() >= 14) {
 
-					// Cột G là cột chứa tên Môn Học
+					// Cá»™t G lÃ  cá»™t chá»©a tÃªn MÃ´n Há»�c
 					CellReference cellRNameSubject = new CellReference("G" + nextRow.getRowNum());
 					Cell cellNameSubject = sheet.getRow(cellRNameSubject.getRow()).getCell(cellRNameSubject.getCol());
-					// hết thì bỏ , dừng đọc
+					// háº¿t thÃ¬ bá»� , dá»«ng Ä‘á»�c
 					if (cellNameSubject.getStringCellValue() == "") {
 						break;
 					}
 					nameSubjects.add(cellNameSubject.getStringCellValue());
-					// Cột AA là cột chứa thứ ( DOW )
+					// Cá»™t AA lÃ  cá»™t chá»©a thá»© ( DOW )
 					CellReference cellRDOWSubject = new CellReference("AA" + nextRow.getRowNum());
 					Cell cellDOWSubject = sheet.getRow(cellRDOWSubject.getRow()).getCell(cellRDOWSubject.getCol());
 					dayOfWeeks.add(cellDOWSubject.getStringCellValue());
-					// Cột AC là cột chứa tiết bắt đầu
+					// Cá»™t AC lÃ  cá»™t chá»©a tiáº¿t báº¯t Ä‘áº§u
 					CellReference cellRStartTime = new CellReference("AC" + nextRow.getRowNum());
 					Cell cellStartTime = sheet.getRow(cellRStartTime.getRow()).getCell(cellRStartTime.getCol());
 					startTimes.add(cellStartTime.getStringCellValue());
-					// Cột AI là cột chứa tên Phòng
+					// Cá»™t AI lÃ  cá»™t chá»©a tÃªn PhÃ²ng
 					CellReference cellRRoom = new CellReference("AI" + nextRow.getRowNum());
 					Cell cellRoom = sheet.getRow(cellRRoom.getRow()).getCell(cellRRoom.getCol());
 					addressRooms.add(cellRoom.getStringCellValue());
@@ -196,7 +220,7 @@ public class Model {
 //						+ startTimes.get(i) + "\t");
 //			}
 
-			// chuyển đổi thứ
+			// chuyá»ƒn Ä‘á»•i thá»©
 			for (int i = 0; i < dayOfWeeks.size(); i++) {
 				try {
 					dayOfWeeks.set(i, (Integer.parseInt(dayOfWeeks.get(i)) - 1) + "");
@@ -222,15 +246,15 @@ public class Model {
 			ArrayList<Data2> listData2 = new ArrayList<Data2>();
 			int step = li2.size();
 			for (int i = 0; i < step; i++) {
-				if (i + 1 < step - 1) { // nếu còn trong tầm thì cứ gộp 2 cái sát nhau thành 1
+				if (i + 1 < step - 1) { // náº¿u cÃ²n trong táº§m thÃ¬ cá»© gá»™p 2 cÃ¡i sÃ¡t nhau thÃ nh 1
 					Data2 data = li.get(i).megeData(li.get(i + 1));
-					// mege thành công
+					// mege thÃ nh cÃ´ng
 					if (data != null) {
 						listData2.add(data);
-						i++; // nhảy thêm 1 bước
+						i++; // nháº£y thÃªm 1 bÆ°á»›c
 						continue;
 					}
-					// mege thất bại ( data == null)
+					// mege tháº¥t báº¡i ( data == null)
 					data = li.get(i).covertData();
 					listData2.add(data);
 					continue;
@@ -248,14 +272,11 @@ public class Model {
 			System.out.println(tgb);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
-
-		return tgb.loadToDB();
-
+		return tgb;
 	}
 
-	// lớp hỗ trợ đọc từ xls
+	// lá»›p há»— trá»£ Ä‘á»�c tá»« xls
 	private class SupportTGBXLS {
 		String dayOfWeek;
 		String subject;
@@ -282,7 +303,7 @@ public class Model {
 
 		public Data2 megeData(SupportTGBXLS sp2) {
 			boolean isMorning = (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("4"));
-			// 2 cái cùng ngày -> phân biệt thứ tự
+			// 2 cÃ¡i cÃ¹ng ngÃ y -> phÃ¢n biá»‡t thá»© tá»±
 			if (dayOfWeek.equalsIgnoreCase(sp2.dayOfWeek)) {
 				if (Integer.parseInt(startTime) < Integer.parseInt(sp2.startTime)) {
 					return new Data2(dayOfWeek, subject, room, sp2.subject, sp2.room, isMorning);
@@ -290,7 +311,7 @@ public class Model {
 					return new Data2(dayOfWeek, sp2.subject, sp2.room, subject, room, isMorning);
 
 				}
-			} else {// hai cái không cùng ngày -> lấy cái đầu
+			} else {// hai cÃ¡i khÃ´ng cÃ¹ng ngÃ y -> láº¥y cÃ¡i Ä‘áº§u
 				return null;
 			}
 
@@ -313,14 +334,15 @@ public class Model {
 
 	}
 
+	// Bước 7 của import
 	public boolean importFromFiletgb(File input) throws Exception {
-		TGB tgb = getTGBFromtgb(input);
+		TGB tgb = getTGBFromFiletgb(input);
 		return tgb.loadToDB();
 	}
 
-	private TGB getTGBFromtgb(File input) throws Exception {
+	private TGB getTGBFromFiletgb(File input) throws Exception {
 		String name = "";
-		TGB tgb = null; // tạo 1 tgb để lưu vào
+		TGB tgb = null; // táº¡o 1 tgb Ä‘á»ƒ lÆ°u vÃ o
 		BufferedReader fileReader = new BufferedReader(new FileReader(input));
 		String line = "";
 		String[] split;

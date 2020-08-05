@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Dimension;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -9,15 +10,18 @@ import javax.swing.JMenuItem;
 
 public class MainView extends JFrame {
 	JMenu mFile, mOpen, mModify, mSetting;
-	JMenuItem miCreate, miImportFromTGB, miImportFromXlsx, miExport;
+	JMenuItem miCreate, miImportFromTGB, miImportFromXlsx, miExport, miOpen;
 	ViewListFile viewListFile;
 	ChooseTypeTGB chooseTypeTGB;
+	ViewListNameTGB viewListNameTGB;
 
-
-	public MainView() {
+	public MainView() throws ClassNotFoundException, SQLException {
 		viewListFile = new ViewListFile();
 		chooseTypeTGB = new ChooseTypeTGB();
-
+//		*** Chuong ***
+		viewListNameTGB = new ViewListNameTGB();
+		viewListNameTGB.closed();
+//		*************************
 		gui();
 		createMenu();
 	}
@@ -83,6 +87,15 @@ public class MainView extends JFrame {
 	public JMenuItem getMiExport() {
 		return miExport;
 	}
+	
+	
+	public JMenuItem getMiOpen() {
+		return miOpen;
+	}
+
+	public ViewListNameTGB getViewListNameTGB() {
+		return viewListNameTGB;
+	}
 
 	private void createMenu() {
 		JMenuBar menuBar = new JMenuBar();
@@ -92,6 +105,7 @@ public class MainView extends JFrame {
 		mModify = new JMenu("Modify");
 		mSetting = new JMenu("Setting");
 		// create menuItem
+		miOpen = new JMenuItem("Open TGB");
 		miCreate = new JMenuItem("Create New");
 		miImportFromTGB = new JMenuItem("ImportFromTGB");
 		miImportFromXlsx = new JMenuItem("Iport From XLSX");
@@ -101,6 +115,7 @@ public class MainView extends JFrame {
 		mFile.add(miImportFromTGB);
 		mFile.add(miImportFromXlsx);
 		mFile.add(miExport);
+		mOpen.add(miOpen);
 
 		menuBar.add(mFile);
 		menuBar.add(mOpen);
@@ -113,6 +128,10 @@ public class MainView extends JFrame {
 
 	public JMenuItem getMiCreate() {
 		return miCreate;
+	}
+	
+	public void closed() {
+		dispose();
 	}
 
 //	public static void main(String[] args) {
