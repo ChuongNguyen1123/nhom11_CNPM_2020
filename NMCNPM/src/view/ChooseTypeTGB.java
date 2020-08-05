@@ -96,47 +96,56 @@ public class ChooseTypeTGB extends JFrame {
 	}
 
 	private void addModels() {
-		JScrollPane scrollPane = new JScrollPane();
-		contentPane.add(scrollPane, BorderLayout.CENTER);
-		JPanel mainPanel = new JPanel();
-		scrollPane.setViewportView(mainPanel);
+			try {
+			JScrollPane scrollPane = new JScrollPane();
+			contentPane.add(scrollPane, BorderLayout.CENTER);
+			JPanel mainPanel = new JPanel();
+			scrollPane.setViewportView(mainPanel);
 //		panel.setLayout(new GridLayout(3, 1));
-		mainPanel.setLayout(new GridLayout(3, 1, 0, 20));
-		// cancle
-		JPanel southPane = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		contentPane.add(southPane, BorderLayout.SOUTH);
-		cancleBt = new JButton("Cancle");
-		southPane.add(cancleBt);
-		// type1
-		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		btnNewButton_1 = new JButton("");
-		ImageIcon img1 = new ImageIcon("resource/model1.png");
-		btnNewButton_1.setPreferredSize(new Dimension(300, 150));
-		btnNewButton_1.setIcon(img1);
-		panel1.add(btnNewButton_1);
-		JLabel lblType1 = new JLabel("Type 1");
-		panel1.add(lblType1);
-		mainPanel.add(panel1);
-		// type 2
-		JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		btnNewButton_2 = new JButton("");
-		ImageIcon img2 = new ImageIcon("resource/model2.png");
-		btnNewButton_2.setPreferredSize(new Dimension(300, 150));
-		btnNewButton_2.setIcon(img2);
-		panel2.add(btnNewButton_2);
-		JLabel lblType2 = new JLabel("Type 2");
-		panel2.add(lblType2);
-		mainPanel.add(panel2);
-		// type 3
-		JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		btnNewButton_3 = new JButton("");
-		ImageIcon img3 = new ImageIcon("resource/model3.png");
-		btnNewButton_3.setPreferredSize(new Dimension(300, 150));
-		btnNewButton_3.setIcon(img3);
-		panel3.add(btnNewButton_3);
-		mainPanel.add(panel3);
-		JLabel lblType3 = new JLabel("Type 3");
-		panel3.add(lblType3);
+			mainPanel.setLayout(new GridLayout(3, 1, 0, 20));
+			// cancle
+			JPanel southPane = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			contentPane.add(southPane, BorderLayout.SOUTH);
+			cancleBt = new JButton("Cancle");
+			southPane.add(cancleBt);
+			// type1
+			JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+			btnNewButton_1 = new JButton("");
+//		ImageIcon img1 = new ImageIcon("resource/model1.png");
+			Image img1;
+
+			img1 = ImageIO.read(getClass().getResource("/model1.png"));
+
+			btnNewButton_1.setPreferredSize(new Dimension(300, 150));
+			btnNewButton_1.setIcon(new ImageIcon(img1));
+			panel1.add(btnNewButton_1);
+			JLabel lblType1 = new JLabel("Type 1");
+			panel1.add(lblType1);
+			mainPanel.add(panel1);
+			// type 2
+			JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+			btnNewButton_2 = new JButton("");
+			Image img2 = ImageIO.read(getClass().getResource("/model2.png"));
+			btnNewButton_2.setPreferredSize(new Dimension(300, 150));
+			btnNewButton_2.setIcon(new ImageIcon(img2));
+			panel2.add(btnNewButton_2);
+			JLabel lblType2 = new JLabel("Type 2");
+			panel2.add(lblType2);
+			mainPanel.add(panel2);
+			// type 3
+			JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+			btnNewButton_3 = new JButton("");
+			Image img3 = ImageIO.read(getClass().getResource("/model3.png"));
+			btnNewButton_3.setPreferredSize(new Dimension(300, 150));
+			btnNewButton_3.setIcon(new ImageIcon(img3));
+			panel3.add(btnNewButton_3);
+			mainPanel.add(panel3);
+			JLabel lblType3 = new JLabel("Type 3");
+			panel3.add(lblType3);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
