@@ -17,7 +17,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import controller.Controller;
 import database.ConnectionDB;
+import model.Model;
 
 public class ViewListNameTGB extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -30,11 +32,17 @@ public class ViewListNameTGB extends JFrame {
 
 	private JScrollPane scrollPane;
 
-	private JButton btXoa, btQuayLai;
+	private JButton btXoa, btQuayLai, btXem;
 
 	private ConnectionDB connectionDB;
+	
+	ViewTableTGB viewTableTGB;
 
 	public ViewListNameTGB() throws ClassNotFoundException, SQLException {
+		
+		viewTableTGB = new ViewTableTGB();
+		viewTableTGB.closed();
+		
 		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		// tạo panel
 		add(p = new JPanel());
@@ -78,99 +86,90 @@ public class ViewListNameTGB extends JFrame {
 		model.addColumn("Danh sách thời gian biểu");
 		model.addColumn("");
 
-//		truy xuất xuống DB để lấy dữ liệu từ table config
-		connectionDB = new ConnectionDB();
-		Connection con = connectionDB.getConnection();
-		String sql = "SELECT config.Name_TGB FROM config";
-		PreparedStatement pre = con.prepareStatement(sql);
-		ResultSet rs = pre.executeQuery();
-		int row = 0;
-		while (rs.next()) {
-			// add row, số row sẽ tương đương với số dòng của table config
-			model.addRow(new Object[0]);
-			// set dữ liệu cho cột 0
-			model.setValueAt(rs.getString("Name_TGB"), row, 0);
-			// set dữ liệu cho cột 1
-			model.setValueAt(false, row, 1);
-			row++;
-		}
 
-		// add 2 button
-		p.add(btXoa = new JButton("Xoa"));
-		p.add(btQuayLai = new JButton("Quay Lai"));
+		// add 3 button
+		p.add(btXoa = new JButton("Delete"));
+		p.add(btQuayLai = new JButton("Quay lai"));
+		p.add(btXem = new JButton("Xem"));
 		btXoa.setBounds(100, 500, 100, 30);
 		btQuayLai.setBounds(400, 500, 100, 30);
+		btXem.setBounds(250, 500, 100, 30);
 		btXoa.setBackground(Color.LIGHT_GRAY);
 		btQuayLai.setBackground(Color.LIGHT_GRAY);
+		btXem.setBackground(Color.LIGHT_GRAY);
 
-		// Action xóa
-		btXoa.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					connectionDB = new ConnectionDB();
-					Connection connect = connectionDB.getConnection();
-
-//					Khởi tạo mảng list chứa các dòng đã chọn 
-					List<Integer> list = new ArrayList<Integer>();
-// 					Duyệt các dòng của table, add vào mảng list những dòng có dấu check ở cột 1
-					for (int i = 0; i < table.getRowCount(); i++) {
-						boolean check = Boolean.valueOf(table.getValueAt(i, 1).toString());
-						if (check) {
-							list.add(i);
-						}
-					}
-
-//					Duyệt mảng list để lấy ra tên tgb dựa vào vị trí của dòng check
-					for (int i = 0; i < list.size(); i++) {
-						String nameTGB = model.getValueAt(list.get(i), 0).toString();
-//						Xóa dòng của table
-						model.removeRow(list.get(i));
-//						xóa tên TGB dưới table config
-						String sqlDelete = "DELETE FROM config WHERE Name_TGB = '" + nameTGB + "'";
-						PreparedStatement pre = connect.prepareStatement(sqlDelete);
-						pre.executeUpdate();
-
-						String sqlXoaBang = " DROP TABLE " + nameTGB ;
-						PreparedStatement preparedStatement = connect.prepareStatement(sqlXoaBang);
-						preparedStatement.executeUpdate();
-// 						xét lại mảng list sao khi xóa
-						
-						for (int j = i + 1; j < list.size(); j++) {
-							list.set(j, list.get(j) - 1);
-						}
-					}
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-
+		
 		// Action quay lại
 		btQuayLai.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 //				gọi class mainview
-				new MainView();
+				try {
+					MainView view = new MainView();
+					Model model;
+					model = new Model();
+					Controller controller = new Controller(view, model);
 //				Đóng giao diện mở TGB
-				closed();
+					closed();
+				} catch (ClassNotFoundException | SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
-
+		table.getColumnModel().getColumn(0).setPreferredWidth(248);
+		setTitle("Danh sách TGB");
 		setSize(600, 600);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setLocationRelativeTo(null);
 	}
+	
+	public ViewTableTGB getViewTableTGB() {
+		return viewTableTGB;
+	}
 
-//	Phương thức đóng giao diện ViewListNameTGB
+	public JTable getTable() {
+		return table;
+	}
+
+	public JButton getBtXoa() {
+		return btXoa;
+	}
+
+	public DefaultTableModel getModel() {
+		return model;
+	}
+
+	public void setBtXoa(JButton btXoa) {
+		this.btXoa = btXoa;
+	}
+
+	public JButton getBtQuayLai() {
+		return btQuayLai;
+	}
+
+	public void setBtQuayLai(JButton btQuayLai) {
+		this.btQuayLai = btQuayLai;
+	}
+	
+	
+public JButton getBtXem() {
+		return btXem;
+	}
+
+
+	public void setBtXem(JButton btXem) {
+		this.btXem = btXem;
+	}
+
+
+	//	Phương thức đóng giao diện ViewListNameTGB
 	public void closed() {
 		dispose();
 	}
+	
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		new ViewListNameTGB();
