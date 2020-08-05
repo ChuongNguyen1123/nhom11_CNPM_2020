@@ -41,12 +41,20 @@ public class Controller {
 
 	}
 
+	private void importXlSX(File inputFile) throws Exception {
+//		boolean isSuccess = model.importFromFiletgb(file);
+		String mess = (model.importFromFilexlsx(inputFile)) ? "import success" : " error, can't import";
+		JOptionPane.showMessageDialog(view, mess);
+
+	}
+
 	private void addAction() {
 
 		importFromTGB();
+		importFromXLSX();
 		buttonViewListFileAction();
 		export();
-		addActionMenuBar();
+		addActionCreate();
 		addActionDataType1();
 		addActionDataType2();
 		addActionDataType3();
@@ -146,7 +154,7 @@ public class Controller {
 
 	}
 
-	private void addActionMenuBar() {
+	private void addActionCreate() {
 		view.getMiCreate().addActionListener(new ActionListener() {
 
 			@Override
@@ -177,6 +185,28 @@ public class Controller {
 				}
 			}
 		});
+	}
+
+	private void importFromXLSX() {
+		view.getMiImportFromXlsx().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooserFile = new JFileChooser();
+				int open = chooserFile.showOpenDialog(view);
+				File inputFile = chooserFile.getSelectedFile();
+				if (open == JFileChooser.APPROVE_OPTION) {
+//					try {
+					try {
+						importXlSX(inputFile);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+
+		});
+
 	}
 
 	private void addActionDataType1() {
