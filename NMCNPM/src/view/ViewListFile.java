@@ -81,7 +81,7 @@ public class ViewListFile extends JFrame {
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 		panel_1.add(jList);
 	}
-
+	// 3.2 của import
 	public void setValuesList(List<String> list) {
 		defListModel.clear();
 		for (String st : list) {
