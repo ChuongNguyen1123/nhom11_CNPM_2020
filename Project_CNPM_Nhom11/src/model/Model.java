@@ -34,7 +34,6 @@ public class Model {
 	private Time timeType3;
 	private TGB defaultTKB;
 	private boolean alarmClockStatus;
-	@SuppressWarnings("unused")
 	private ConnectionDB cdb;
 
 	public Model() throws ClassNotFoundException, SQLException {
@@ -117,7 +116,8 @@ public class Model {
 //		System.out.println(tgb);
 		return tgb;
 	}
-	
+
+//	Lay cac dong cua table TGB
 	public ResultSet getTableTGB(String nameTGB) throws ClassNotFoundException, SQLException {
 		Connection connectTableTGB = cdb.getConnection();
 		String sqlTableTGB = "SELECT * FROM config c, " + nameTGB + " WHERE c.Name_TGB =  '" + nameTGB + "'";
@@ -126,22 +126,45 @@ public class Model {
 		return rsTableTGB;
 		}
 
-	public void editTKB() {
+//	Phuong thuc cac cau query update
+	public PreparedStatement editTKB(String nameTGB) throws ClassNotFoundException, SQLException {
+		Connection connectEdit = cdb.getConnection();
+		String sqlEdit = "";
+		PreparedStatement preEdit = null ;
+//		update table dang 1
+		if(nameTGB.contains("1")) {
+			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject1 = ?, NameSubject2 = ?, NameSubject3 = ?, NameSubject4 = ?, NameSubject5 = ?, IsMorning = ?";
+			preEdit = connectEdit.prepareStatement(sqlEdit);
+		}
+//		update table dang 2
+		if(nameTGB.contains("2")) {
+			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject1 = ?, RoomSubject1 = ?, NameSubject2 = ?, RoomSubject2 = ?, IsMorning = ?";
+			preEdit = connectEdit.prepareStatement(sqlEdit);
+		}
+//		update table dang 3
+		if(nameTGB.contains("3")) {
+			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject = ?, TimeSubject = ?";
+			preEdit = connectEdit.prepareStatement(sqlEdit);
+		}
+		
+		return preEdit;
 
 	}
 
+//	Xoa tgb duoi db
 	public void removeTKB(String nameTGB) throws ClassNotFoundException, SQLException {
-Connection connectionRemove = cdb.getConnection();
-		String sqlRemove = "DELETE FROM config WHERE Name_TGB = '" + nameTGB + "'";
+		Connection connectionRemove = cdb.getConnection();
+		String sqlRemove = "DELETE FROM config WHERE Name_TGB = '" + nameTGB + "'"; //	Xoa dong table config
 		PreparedStatement preRemove = connectionRemove.prepareStatement(sqlRemove);
 		preRemove.executeUpdate();
-
+//		Xoa table TGB 
 		String sqlXoaBang = " DROP TABLE " + nameTGB;
 		PreparedStatement preXB = connectionRemove.prepareStatement(sqlXoaBang);
 		preXB.executeUpdate();
 		connectionRemove.close();
 	}
 
+// Bươc 9 của export
 	public boolean export(String filePath, String nameTGB) {
 
 		try {
@@ -156,7 +179,15 @@ Connection connectionRemove = cdb.getConnection();
 
 	}
 
+	// Bước 7 của import
 	public boolean importFromFilexlsx(File input) throws Exception {
+		TGBType2 tgb = getTGBFromXLSX(input);
+
+		return tgb.loadToDB();
+
+	}
+
+	private TGBType2 getTGBFromXLSX(File input) {
 		ArrayList<String> nameSubjects = new ArrayList<String>();
 		ArrayList<String> dayOfWeeks = new ArrayList<String>();
 		ArrayList<String> startTimes = new ArrayList<String>();
@@ -175,7 +206,7 @@ Connection connectionRemove = cdb.getConnection();
 			// cell name at J7 ( mssv)
 			CellReference cellReference = new CellReference("I7");
 			Cell cellName = sheet.getRow(cellReference.getRow()).getCell(cellReference.getCol());
-			tgb.setName("SV_"+cellName.getStringCellValue());
+			tgb.setName("SV_" + cellName.getStringCellValue());
 
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
@@ -265,11 +296,8 @@ Connection connectionRemove = cdb.getConnection();
 			System.out.println(tgb);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
-
-		return tgb.loadToDB();
-
+		return tgb;
 	}
 
 	// lá»›p há»— trá»£ Ä‘á»�c tá»« xls
@@ -330,12 +358,13 @@ Connection connectionRemove = cdb.getConnection();
 
 	}
 
+	// Bước 7 của import
 	public boolean importFromFiletgb(File input) throws Exception {
-		TGB tgb = getTGBFromtgb(input);
+		TGB tgb = getTGBFromFiletgb(input);
 		return tgb.loadToDB();
 	}
 
-	private TGB getTGBFromtgb(File input) throws Exception {
+	private TGB getTGBFromFiletgb(File input) throws Exception {
 		String name = "";
 		TGB tgb = null; // táº¡o 1 tgb Ä‘á»ƒ lÆ°u vÃ o
 		BufferedReader fileReader = new BufferedReader(new FileReader(input));

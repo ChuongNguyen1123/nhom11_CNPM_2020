@@ -40,7 +40,6 @@ public class ViewTableTGB extends JFrame {
 	
 	private JLabel lblSang, lblChieu;
 
-	private ConnectionDB connectionDB;
 
 	public ViewTableTGB() throws ClassNotFoundException, SQLException {
 		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -62,8 +61,7 @@ public class ViewTableTGB extends JFrame {
 		model = new DefaultTableModel() {
 			private static final long serialVersionUID = 1L;
 
-			// khởi tạo các kiểu dữ liệu cho các cột - ở đây mình tạo 2 cột 0-1 , cột 0 là
-			// kiểu String và cột 1 là boolean (checkbox)
+			// khởi tạo các kiểu dữ liệu cho các cột 
 			public java.lang.Class<?> getColumnClass(int columnIndex) {
 				switch (columnIndex) {
 //				Cột 0
@@ -94,7 +92,7 @@ public class ViewTableTGB extends JFrame {
 		// set model cho table
 		table.setModel(model);
 
-		// add 2 cột cho model
+		// add title cua cac cot
 		model.addColumn("Ca học/Thời gian");
 		model.addColumn("Thứ 2");
 		model.addColumn("Thứ 3");
@@ -103,31 +101,22 @@ public class ViewTableTGB extends JFrame {
 		model.addColumn("Thứ 6");
 		model.addColumn("Thứ 7");
 		model.addColumn("Chủ nhật");
-//		int rc = 1;
-//		int rs = 1;
+		
+		
 		for (int i = 0; i < 8; i++) {
-//			// add row, số row sẽ tương đương với số dòng của table config
+//			 add row, số row sẽ co 8 row danh so tu 0 den 7
 			model.addRow(new Object[0]);
-//			// set dữ liệu cho cột 0
-//			if (i < 4) {
-//				model.setValueAt("Ca " + rs, i, 0);
-//				rs++;
-//			} else {
-//				model.setValueAt("Ca " + rc, i, 0);
-//				rc++;
-//			}
-//			// set dữ liệu cho cột 1
-			model.setValueAt(null, i, 0);
-			model.setValueAt(null, i, 1);
-			model.setValueAt(null, i, 2);
-			model.setValueAt(null, i, 3);
-			model.setValueAt(null, i, 4);
-			model.setValueAt(null, i, 5);
-			model.setValueAt(null, i, 6);
-			model.setValueAt(null, i, 7);
+			model.setValueAt("", i, 0);
+			model.setValueAt("", i, 1);
+			model.setValueAt("", i, 2);
+			model.setValueAt("", i, 3);
+			model.setValueAt("", i, 4);
+			model.setValueAt("", i, 5);
+			model.setValueAt("", i, 6);
+			model.setValueAt("", i, 7);
 		}
 
-		// add 3 button
+		// add 2 button
 		p.add(btUpdate = new JButton("Update"));
 		p.add(btQuayLai = new JButton("Quay lại"));
 		btUpdate.setBounds(200, 170, 100, 30);
@@ -137,23 +126,6 @@ public class ViewTableTGB extends JFrame {
 		btUpdate.setFont(new Font("Arial", Font.PLAIN, 14));
 		btQuayLai.setFont(new Font("Arial", Font.PLAIN, 14));
 		
-		btQuayLai.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-//			gọi class mainview
-			try {
-				MainView view = new MainView();
-				Model model;
-				model = new Model();
-				Controller controller = new Controller(view, model);
-//			Đóng giao diện mở TGB
-				closed();
-			} catch (ClassNotFoundException | SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-	});
 
 		lblSang = new JLabel("Sáng");
 		lblSang.setHorizontalAlignment(SwingConstants.CENTER);
@@ -216,6 +188,8 @@ public class ViewTableTGB extends JFrame {
 	public JLabel getLblChieu() {
 		return lblChieu;
 	}
+	
+	
 
 	// Phương thức đóng giao diện ViewListNameTGB
 	public void closed() {

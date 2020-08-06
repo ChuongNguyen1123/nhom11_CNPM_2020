@@ -59,7 +59,7 @@ public abstract class TGB {
 	public void setDefaultDisplay(boolean isDefaultDisplay) {
 		this.isDefaultDisplay = isDefaultDisplay;
 	}
-
+	// Bước 8 của import, 7 của creat new 
 	public boolean loadToDB() throws SQLException {
 		Connection conn = ConnectionDB.connection;
 		Statement state = conn.createStatement();

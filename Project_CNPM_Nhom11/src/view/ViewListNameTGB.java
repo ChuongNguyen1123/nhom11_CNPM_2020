@@ -34,8 +34,6 @@ public class ViewListNameTGB extends JFrame {
 
 	private JButton btXoa, btQuayLai, btXem;
 
-	private ConnectionDB connectionDB;
-	
 	ViewTableTGB viewTableTGB;
 
 	public ViewListNameTGB() throws ClassNotFoundException, SQLException {
@@ -98,26 +96,7 @@ public class ViewListNameTGB extends JFrame {
 		btQuayLai.setBackground(Color.LIGHT_GRAY);
 		btXem.setBackground(Color.LIGHT_GRAY);
 
-		
-		// Action quay lại
-		btQuayLai.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-//				gọi class mainview
-				try {
-					MainView view = new MainView();
-					Model model;
-					model = new Model();
-					Controller controller = new Controller(view, model);
-//				Đóng giao diện mở TGB
-					closed();
-				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
+				
 		table.getColumnModel().getColumn(0).setPreferredWidth(248);
 		setTitle("Danh sách TGB");
 		setSize(600, 600);
