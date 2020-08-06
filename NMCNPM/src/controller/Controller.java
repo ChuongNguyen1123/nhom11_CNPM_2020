@@ -116,7 +116,7 @@ public class Controller {
 
 					chooser.showSaveDialog(view);
 					String filePath = chooser.getSelectedFile().toString();
-
+						// gọi bước 7
 					boolean isSuccess = model.export(filePath, selectName);
 					if (isSuccess) {
 						JOptionPane.showMessageDialog(view, "Export success");
