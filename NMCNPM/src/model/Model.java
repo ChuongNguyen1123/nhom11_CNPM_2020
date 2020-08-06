@@ -69,6 +69,7 @@ public class Model {
 		this.alarmClockStatus = alarmClockStatus;
 	}
 	// lấy danh sách tên các tgb từ data base
+	// bước 3.1 export
 	public List<String> getListNameTGB() throws SQLException {
 		List<String> listName = new ArrayList<String>();
 		String sqlConfig = "Select * from config ";
@@ -140,7 +141,7 @@ public class Model {
 		preXB.executeUpdate();
 		connectionRemove.close();
 	}
-// Bươc 9 của export
+// Bươc 7 của export
 	public boolean export(String filePath, String nameTGB) {
 
 		try {
