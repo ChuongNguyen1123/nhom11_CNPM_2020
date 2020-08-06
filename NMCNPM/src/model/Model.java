@@ -68,7 +68,7 @@ public class Model {
 	public void setAlarmClockStatus(boolean alarmClockStatus) {
 		this.alarmClockStatus = alarmClockStatus;
 	}
-
+	// lấy danh sách tên các tgb từ data base
 	public List<String> getListNameTGB() throws SQLException {
 		List<String> listName = new ArrayList<String>();
 		String sqlConfig = "Select * from config ";
@@ -79,7 +79,7 @@ public class Model {
 
 		return listName;
 	}
-
+	// lấy 1 tgb bằng name từ datab base
 	public TGB getDataTGB(String name) throws SQLException {
 		String sqlConfig = "Select * from config where Name_TGB = ?";
 		PreparedStatement prs = ConnectionDB.connection.prepareStatement(sqlConfig);
@@ -162,7 +162,7 @@ public class Model {
 		return tgb.loadToDB();
 
 	}
-
+	// lấy 1 tgb từ file xlsx ( mặc định loại 2 )
 	private TGBType2 getTGBFromXLSX(File input) {
 		ArrayList<String> nameSubjects = new ArrayList<String>();
 		ArrayList<String> dayOfWeeks = new ArrayList<String>();
@@ -339,7 +339,7 @@ public class Model {
 		TGB tgb = getTGBFromFiletgb(input);
 		return tgb.loadToDB();
 	}
-
+	
 	private TGB getTGBFromFiletgb(File input) throws Exception {
 		String name = "";
 		TGB tgb = null; // táº¡o 1 tgb Ä‘á»ƒ lÆ°u vÃ o
