@@ -81,6 +81,7 @@ public class Model {
 		return listName;
 	}
 	// lấy 1 tgb bằng name từ datab base
+	// 7.2 của export
 	public TGB getDataTGB(String name) throws SQLException {
 		String sqlConfig = "Select * from config where Name_TGB = ?";
 		PreparedStatement prs = ConnectionDB.connection.prepareStatement(sqlConfig);
