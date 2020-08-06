@@ -100,7 +100,7 @@ public class Controller {
 		});
 
 	}
-	// Bước 7 của export
+	// Bước 4.2 của export
 	private void actionButtonViewListFile() {
 		view.getViewListFile().getBtnExport().addActionListener(new ActionListener() {
 
@@ -112,6 +112,7 @@ public class Controller {
 					//
 					String selectName = (view.getViewListFile().getList().getSelectedValue());
 					JFileChooser chooser = new JFileChooser();
+					// bước 5
 
 					chooser.showSaveDialog(view);
 					String filePath = chooser.getSelectedFile().toString();
@@ -141,7 +142,7 @@ public class Controller {
 
 	}
 
-	// action menuItem export
+	// bước 3 của export
 	private void actionExport() {
 		// muốn export ra file tbk
 		view.getMiExport().addActionListener(new ActionListener() {
