@@ -59,8 +59,10 @@ public abstract class TGB {
 	public void setDefaultDisplay(boolean isDefaultDisplay) {
 		this.isDefaultDisplay = isDefaultDisplay;
 	}
-	// Bước 8 của import, 7 của creat new 
-	public boolean loadToDB() throws SQLException {
+	// Bước 8 của import, 7.1 của creat new 
+	public boolean loadToDB() {
+		
+		try {
 		Connection conn = ConnectionDB.connection;
 		Statement state = conn.createStatement();
 		// kiểm tra xem có tkb nào trong db trùng tên vs nó chưa. nếu có thì trả về
@@ -79,9 +81,11 @@ public abstract class TGB {
 			ResultSet rsGetSQl = state.executeQuery("SELECT * FROM DEFINE WHERE Type_TGB = 1");
 			rsGetSQl.next();
 			System.out.println("query " + rsGetSQl.getString("SQL_Create"));
+			// tạo bảng tgb mới trong db
 			String sqlCreate = "CREATE TABLE " + name + rsGetSQl.getString("SQL_Create");
 			state.execute(sqlCreate);
 			insertData();
+			// cập nhật config
 			String preSQL = "INSERT INTO config values ( ?,?,?,?)";
 			PreparedStatement preS = conn.prepareStatement(preSQL);
 			preS.setString(1, name);
@@ -94,9 +98,11 @@ public abstract class TGB {
 		if (this instanceof TGBType2) {
 			ResultSet rsGetSQl = state.executeQuery("SELECT * FROM DEFINE WHERE Type_TGB = 2");
 			rsGetSQl.next();
+			// tạo bảng tgb mới trong db
 			String sqlCreate = "CREATE TABLE " + name + rsGetSQl.getString("SQL_Create");
 			state.execute(sqlCreate);
 			insertData();
+			// cập nhật config
 			String preSQL = "INSERT INTO config values ( ?,?,?,?)";
 			PreparedStatement preS = conn.prepareStatement(preSQL);
 			preS.setString(1, name);
@@ -109,9 +115,11 @@ public abstract class TGB {
 		if (this instanceof TGBType3) {
 			ResultSet rsGetSQl = state.executeQuery("SELECT * FROM DEFINE WHERE Type_TGB = 3");
 			rsGetSQl.next();
+			// tạo bảng tgb mới trong db
 			String sqlCreate = "CREATE TABLE " + name + rsGetSQl.getString("SQL_Create");
 			state.execute(sqlCreate);
 			insertData();
+			// cập nhật config
 			String preSQL = "INSERT INTO config values ( ?,?,?,?)";
 			PreparedStatement preS = conn.prepareStatement(preSQL);
 			preS.setString(1, name);
@@ -121,11 +129,15 @@ public abstract class TGB {
 			preS.execute();
 			return true;
 		}
-		return true;
+		}
+		catch (Exception e) {
+		return false;
+		}
+		return false;
 	}
 
 	protected abstract void insertData() throws SQLException;
-
+	// Bước 7.3 của export, exort ra file
 	public abstract void export(String filePath) throws IOException;
 
 }

@@ -35,7 +35,8 @@ public class ChooseTypeTGB extends JFrame {
 	 * Create the frame.
 	 */
 	public ChooseTypeTGB() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Choose Type TGB");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -104,28 +105,24 @@ public class ChooseTypeTGB extends JFrame {
 			contentPane.add(scrollPane, BorderLayout.CENTER);
 			JPanel mainPanel = new JPanel();
 			scrollPane.setViewportView(mainPanel);
-//		panel.setLayout(new GridLayout(3, 1));
 			mainPanel.setLayout(new GridLayout(3, 1, 0, 20));
-			// cancle
+			// tạo panen chứa button cancle
 			JPanel southPane = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 			contentPane.add(southPane, BorderLayout.SOUTH);
 			cancleBt = new JButton("Cancle");
 			southPane.add(cancleBt);
-			// type1
+			// tạo button hiển thị mẫu tgb type 1
 			JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 			btnNewButton_1 = new JButton("");
-//		ImageIcon img1 = new ImageIcon("resource/model1.png");
 			Image img1;
-
 			img1 = ImageIO.read(getClass().getResource("/model1.png"));
-
 			btnNewButton_1.setPreferredSize(new Dimension(300, 150));
 			btnNewButton_1.setIcon(new ImageIcon(img1));
 			panel1.add(btnNewButton_1);
 			JLabel lblType1 = new JLabel("Type 1");
 			panel1.add(lblType1);
 			mainPanel.add(panel1);
-			// type 2
+			// tạo button hiển thị mẫu tgb type 2
 			JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 			btnNewButton_2 = new JButton("");
 			Image img2 = ImageIO.read(getClass().getResource("/model2.png"));
@@ -135,7 +132,7 @@ public class ChooseTypeTGB extends JFrame {
 			JLabel lblType2 = new JLabel("Type 2");
 			panel2.add(lblType2);
 			mainPanel.add(panel2);
-			// type 3
+			// tạo button hiển thị mẫu tgb type 3
 			JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 			btnNewButton_3 = new JButton("");
 			Image img3 = ImageIO.read(getClass().getResource("/model3.png"));

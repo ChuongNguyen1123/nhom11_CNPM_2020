@@ -68,8 +68,7 @@ public class Model {
 	public void setAlarmClockStatus(boolean alarmClockStatus) {
 		this.alarmClockStatus = alarmClockStatus;
 	}
-	// lấy danh sách tên các tgb từ data base
-	// bước 3.1 export
+	// bước 3.1 export, lấy danh sách tên các tgb từ data base
 	public List<String> getListNameTGB() throws SQLException {
 		List<String> listName = new ArrayList<String>();
 		String sqlConfig = "Select * from config ";
@@ -81,7 +80,7 @@ public class Model {
 		return listName;
 	}
 	// lấy 1 tgb bằng name từ datab base
-	// 7.2 của export
+	// 7.1 của export
 	public TGB getDataTGB(String name) throws SQLException {
 		String sqlConfig = "Select * from config where Name_TGB = ?";
 		PreparedStatement prs = ConnectionDB.connection.prepareStatement(sqlConfig);
@@ -142,7 +141,7 @@ public class Model {
 		preXB.executeUpdate();
 		connectionRemove.close();
 	}
-// Bươc 7 của export
+// Bươc 7 của export lấy ra tgb và export nó
 	public boolean export(String filePath, String nameTGB) {
 
 		try {
@@ -157,7 +156,7 @@ public class Model {
 
 	}
 
-	// Bước 7 của import
+	// Bước 6 của import, lấy tgb từ File xls
 	public boolean importFromFilexlsx(File input) throws Exception {
 		TGBType2 tgb = getTGBFromXLSX(input);
 
@@ -172,13 +171,11 @@ public class Model {
 		ArrayList<String> addressRooms = new ArrayList<String>();
 		TGBType2 tgb = new TGBType2("");
 		try {
-			// import tá»« file xlsx lÃ  loáº¡i 2.
+			// mở file xls .
 			FileInputStream fileStream = new FileInputStream(input);
 
-//			HSSFWorkbook wb = new HSSFFWorkbook(fileStream);
 			HSSFWorkbook wb = new HSSFWorkbook(fileStream);
 
-//			HSSFFSheet sheet = wb.getSheetAt(0);
 			HSSFSheet sheet = wb.getSheetAt(0);
 			Iterator<Row> iterator = sheet.iterator();
 			// cell name at J7 ( mssv)
@@ -188,41 +185,37 @@ public class Model {
 
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
-				// cháº¡y tá»« dÃ²ng 14
+				// dữ liệu bắt đầu từ dòng 14
 				if (nextRow.getRowNum() >= 14) {
 
-					// Cá»™t G lÃ  cá»™t chá»©a tÃªn MÃ´n Há»�c
+					// Cột g chứa tên của môn học
 					CellReference cellRNameSubject = new CellReference("G" + nextRow.getRowNum());
 					Cell cellNameSubject = sheet.getRow(cellRNameSubject.getRow()).getCell(cellRNameSubject.getCol());
-					// háº¿t thÃ¬ bá»� , dá»«ng Ä‘á»�c
+					// nếu lấy tên môn học mà rỗng thì break , kết thúc đọc file
 					if (cellNameSubject.getStringCellValue() == "") {
 						break;
 					}
 					nameSubjects.add(cellNameSubject.getStringCellValue());
-					// Cá»™t AA lÃ  cá»™t chá»©a thá»© ( DOW )
+					// Cột AA là cột chứa thứ trong tuần  ( DOW)
 					CellReference cellRDOWSubject = new CellReference("AA" + nextRow.getRowNum());
 					Cell cellDOWSubject = sheet.getRow(cellRDOWSubject.getRow()).getCell(cellRDOWSubject.getCol());
 					dayOfWeeks.add(cellDOWSubject.getStringCellValue());
-					// Cá»™t AC lÃ  cá»™t chá»©a tiáº¿t báº¯t Ä‘áº§u
+					// Cột AC là cột chứa tiết bắt đầu
 					CellReference cellRStartTime = new CellReference("AC" + nextRow.getRowNum());
 					Cell cellStartTime = sheet.getRow(cellRStartTime.getRow()).getCell(cellRStartTime.getCol());
 					startTimes.add(cellStartTime.getStringCellValue());
-					// Cá»™t AI lÃ  cá»™t chá»©a tÃªn PhÃ²ng
+					// Cột AI là cột chứa Phòng
 					CellReference cellRRoom = new CellReference("AI" + nextRow.getRowNum());
 					Cell cellRoom = sheet.getRow(cellRRoom.getRow()).getCell(cellRRoom.getCol());
 					addressRooms.add(cellRoom.getStringCellValue());
 				}
 
 			}
-
+			// đọc xong, đóng file
 			wb.close();
 			fileStream.close();
-//			for (int i = 0; i < nameSubjects.size(); i++) {
-//				System.out.println(dayOfWeeks.get(i) + "\t" + nameSubjects.get(i) + " \t" + addressRooms.get(i) + "\t"
-//						+ startTimes.get(i) + "\t");
-//			}
 
-			// chuyá»ƒn Ä‘á»•i thá»©
+			// chuyển đổi ngày tháng trong tuần (1-7 )
 			for (int i = 0; i < dayOfWeeks.size(); i++) {
 				try {
 					dayOfWeeks.set(i, (Integer.parseInt(dayOfWeeks.get(i)) - 1) + "");
@@ -230,10 +223,12 @@ public class Model {
 					dayOfWeeks.set(i, "7");
 				}
 			}
+			// tạo clone các list tránh khi duyệt mà bị thay đổi dữ liệu ( phần remove(0))
 			ArrayList<String> nameSubjectsC = (ArrayList<String>) nameSubjects.clone();
 			ArrayList<String> dayOfWeeksC = (ArrayList<String>) dayOfWeeks.clone();
 			ArrayList<String> startTimesC = (ArrayList<String>) startTimes.clone();
 			ArrayList<String> addressRoomsC = (ArrayList<String>) addressRooms.clone();
+			// li chỉ là danh sách các  supportTGBXLS thôi, dùng nó làm tền đề để tinh chỉnh thứ tự à add vào TGB
 			ArrayList<SupportTGBXLS> li = new ArrayList<SupportTGBXLS>();
 			for (int i = 0; i < dayOfWeeks.size(); i++) {
 				SupportTGBXLS sp = new SupportTGBXLS(dayOfWeeksC.get(0), nameSubjectsC.get(0), addressRoomsC.get(0),
@@ -244,16 +239,17 @@ public class Model {
 				startTimesC.remove(0);
 				addressRoomsC.remove(0);
 			}
+			// li2 là clone của li, đề phòng bị thay đổi khi duyệt
 			ArrayList<SupportTGBXLS> li2 = (ArrayList<SupportTGBXLS>) li.clone();
 			ArrayList<Data2> listData2 = new ArrayList<Data2>();
 			int step = li2.size();
 			for (int i = 0; i < step; i++) {
-				if (i + 1 < step - 1) { // náº¿u cÃ²n trong táº§m thÃ¬ cá»© gá»™p 2 cÃ¡i sÃ¡t nhau thÃ nh 1
+				if (i + 1 < step - 1) { // các môn học cùng tên nằm sát nhau ( khác thứ tiết ) thì  hợp lại thành 1
 					Data2 data = li.get(i).megeData(li.get(i + 1));
 					// mege thÃ nh cÃ´ng
 					if (data != null) {
 						listData2.add(data);
-						i++; // nháº£y thÃªm 1 bÆ°á»›c
+						i++; // nhảy thâm 1 bậc
 						continue;
 					}
 					// mege tháº¥t báº¡i ( data == null)
@@ -265,10 +261,6 @@ public class Model {
 				listData2.add(li.get(i).covertData());
 
 			}
-//			for (Data2 sp : listData2) {
-//				System.out.println(sp);
-//
-//			}
 
 			tgb.setListData(listData2);
 			System.out.println(tgb);
@@ -278,7 +270,7 @@ public class Model {
 		return tgb;
 	}
 
-	// lá»›p há»— trá»£ Ä‘á»�c tá»« xls
+	// Lớp hỗ trợ cho đọc từ file xls
 	private class SupportTGBXLS {
 		String dayOfWeek;
 		String subject;
@@ -305,7 +297,7 @@ public class Model {
 
 		public Data2 megeData(SupportTGBXLS sp2) {
 			boolean isMorning = (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("4"));
-			// 2 cÃ¡i cÃ¹ng ngÃ y -> phÃ¢n biá»‡t thá»© tá»±
+			// 2 cái cùng ngày thì phải phân biệt thứ tự
 			if (dayOfWeek.equalsIgnoreCase(sp2.dayOfWeek)) {
 				if (Integer.parseInt(startTime) < Integer.parseInt(sp2.startTime)) {
 					return new Data2(dayOfWeek, subject, room, sp2.subject, sp2.room, isMorning);
@@ -313,7 +305,7 @@ public class Model {
 					return new Data2(dayOfWeek, sp2.subject, sp2.room, subject, room, isMorning);
 
 				}
-			} else {// hai cÃ¡i khÃ´ng cÃ¹ng ngÃ y -> láº¥y cÃ¡i Ä‘áº§u
+			} else { // hai cái không cùng ngày, lấy cái sau
 				return null;
 			}
 
@@ -335,16 +327,42 @@ public class Model {
 		}
 
 	}
-
-	// Bước 7 của import
-	public boolean importFromFiletgb(File input) throws Exception {
+	// Bước 6 của import, lấy tgb từ File tgb
+	public boolean importFromFiletgb(File input)  {
 		TGB tgb = getTGBFromFiletgb(input);
 		return tgb.loadToDB();
 	}
 	
-	private TGB getTGBFromFiletgb(File input) throws Exception {
+	private TGB getTGBFromFiletgb(File input)  {
+		// lúc trước để null nhưng nếu vậy thì không xử lý được trình trạng nhập tên file sai, cách này chữa cháy thôi, vì lớp abstract dùng vầy là quá sai
+		TGB tgb = new TGB() {
+			
+			@Override
+			protected void insertData() throws SQLException {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void export(String filePath) throws IOException {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			void editTKB(TGB tbkEdited) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void addData(String lineData) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		try {
 		String name = "";
-		TGB tgb = null; // táº¡o 1 tgb Ä‘á»ƒ lÆ°u vÃ o
 		BufferedReader fileReader = new BufferedReader(new FileReader(input));
 		String line = "";
 		String[] split;
@@ -380,6 +398,10 @@ public class Model {
 		}
 		System.out.println(tgb);
 		fileReader.close();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		return tgb;
 	}
 

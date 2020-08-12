@@ -34,17 +34,19 @@ public class Controller {
 		this.model = model;
 		addAction();
 	}
-	// Bước 6 của import
+	/*
+	 * Thực hiện gọi Phuowng thức import from file tgb của model, quăng thông báo 
+	 */
 	private void importFromFileTGB(File file) throws Exception {
-//		boolean isSuccess = model.importFromFiletgb(file);
 		String mess = (model.importFromFiletgb(file)) ? "import success" : " error, can't import";
 		JOptionPane.showMessageDialog(view, mess);
 
 	}
 
-	// Bước 6 của import
-	private void importFromFileXlSX(File inputFile) throws Exception {
-//		boolean isSuccess = model.importFromFiletgb(file);
+	/*
+	 * Thực hiện gọi Phuowng thức import from file xls của model, quăng thông báo 
+	 */
+	private void importFromFileXlS(File inputFile) throws Exception {
 		String mess = (model.importFromFilexlsx(inputFile)) ? "import success" : " error, can't import";
 		JOptionPane.showMessageDialog(view, mess);
 
@@ -53,7 +55,7 @@ public class Controller {
 	private void addAction() {
 
 		actionImportFromFileTGB();
-		actionImportFromFileXLSX();
+		actionImportFromFileXLS();
 		actionButtonViewListFile();
 		actionExport();
 		actionCreate();
@@ -65,11 +67,12 @@ public class Controller {
 		addActionbtnXemTGB();
 		addActionMenuBar();
 	}
-	// bước 6 creat new 
+	// add hành động của choose type tgb
+	// Bước 5 của create new.hiển thị mẫu tương ứng 
 	private void actionChooseType() {
 		ChooseTypeTGB choosed = view.getChooseTypeTGB();
 		choosed.getBtnNewButton_1().addActionListener(new ActionListener() {
-
+			// hiển thị mẫu tgb 1
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				choosed.setVisible(false);
@@ -79,7 +82,7 @@ public class Controller {
 			}
 		});
 		choosed.getBtnNewButton_2().addActionListener(new ActionListener() {
-
+			// hiển thị mẫu tgb 2
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				choosed.setVisible(false);
@@ -89,7 +92,7 @@ public class Controller {
 			}
 		});
 		choosed.getBtnNewButton_3().addActionListener(new ActionListener() {
-
+			// hiển thị mẫu tgb 3
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				choosed.setVisible(false);
@@ -100,24 +103,22 @@ public class Controller {
 		});
 
 	}
-	// Bước 4.2 của export
+	//  Bước 4.1 export , add hành động cho các button của view list file
 	private void actionButtonViewListFile() {
+//		view.getViewListFile().setVisible(false);
 		view.getViewListFile().getBtnExport().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//
 				try {
-
-					//
-					String selectName = (view.getViewListFile().getList().getSelectedValue());
+					// lấy tên tgb được chọn
+					String nameTGB = (view.getViewListFile().getList().getSelectedValue());
+					// Bước 5 gọi và show JChosserFile
 					JFileChooser chooser = new JFileChooser();
-					// bước 5
-
 					chooser.showSaveDialog(view);
 					String filePath = chooser.getSelectedFile().toString();
-						// gọi bước 7
-					boolean isSuccess = model.export(filePath, selectName);
+					// Thực hiện export
+					boolean isSuccess = model.export(filePath, nameTGB);
 					if (isSuccess) {
 						JOptionPane.showMessageDialog(view, "Export success");
 					} else {
@@ -127,6 +128,7 @@ public class Controller {
 					view.getViewListFile().setVisible(false);
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					view.getViewListFile().setVisible(false);
 				}
 
 			}
@@ -142,9 +144,8 @@ public class Controller {
 
 	}
 
-	// bước 3 của export
+	// Bước 3 export hiển thị bảng view list file 
 	private void actionExport() {
-		// muốn export ra file tbk
 		view.getMiExport().addActionListener(new ActionListener() {
 
 			@Override
@@ -171,7 +172,7 @@ public class Controller {
 	}
 
 	// importFromTGB action
-	// Bước 4 của import
+	// Bước 3 của import - hiển thị JFileChooser, 
 	private void actionImportFromFileTGB() {
 
 		view.getMiImportFromTGB().addActionListener(new ActionListener() {
@@ -179,12 +180,12 @@ public class Controller {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooserFile = new JFileChooser();
+				chooserFile.setApproveButtonText("Import");
 				int open = chooserFile.showOpenDialog(view);
 				File inputFile = chooserFile.getSelectedFile();
-				System.out.println(inputFile.getName());
 				if (open == JFileChooser.APPROVE_OPTION) {
-//					try {
 					try {
+						// Bước 5 của import, tiến hành import
 						importFromFileTGB(inputFile);
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -194,18 +195,18 @@ public class Controller {
 		});
 	}
 	// Bước 4 của import
-	private void actionImportFromFileXLSX() {
+	private void actionImportFromFileXLS() {
 		view.getMiImportFromXlsx().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooserFile = new JFileChooser();
+				chooserFile.setApproveButtonText("Import");
 				int open = chooserFile.showOpenDialog(view);
 				File inputFile = chooserFile.getSelectedFile();
 				if (open == JFileChooser.APPROVE_OPTION) {
-//					try {
 					try {
-						importFromFileXlSX(inputFile);
+						importFromFileXlS(inputFile);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -223,6 +224,9 @@ public class Controller {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TGBType1 tgb = new TGBType1(tableDataType1.getTxtNameTgb().getText());
+				/*
+				 * Table đầu tiên của type là buổi sáng, cần phải chuyển về dạng thích hợp để truyền vào Phương thức addData của tgb
+				 */
 				TableModel d = tableDataType1.getTable().getModel();
 				int columCount = d.getColumnCount();
 				int rowCount = d.getRowCount();
@@ -239,10 +243,13 @@ public class Controller {
 					lineData = ""; // clean line data
 
 				}
+				/*
+				 * Table thứ 2 là buổi chiều, cũng chuyển đổi lại để add vào tgb bằng phương thức addData
+				 */
 				TableModel d1 = tableDataType1.getTable_1().getModel();
 				int columCount1 = d1.getColumnCount();
 				int rowCount1 = d1.getRowCount();
-//				TGBType1 tgb1 = new TGBType1(view.getTableDataType1().getName());
+
 				tgb.setDefaultDisplay(tableDataType1.isDefault());
 				String lineData1 = ""; // dòng dữ liệu chuẩn bị cho add data
 				for (int i = 0; i < columCount1; i++) {
@@ -256,14 +263,10 @@ public class Controller {
 					lineData1 = ""; // clean line data
 
 				}
-				try {
-					String mess = (tgb.loadToDB()) ? "create success" : " error, can't create";
-					JOptionPane.showMessageDialog(view, mess);
-
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(view, " error, can't create");
-					e1.printStackTrace();
-				}
+				// 7.1 Load tgb vào db, thả thông báo
+				String mess = (tgb.loadToDB()) ? "create success" : " error, can't create";
+				JOptionPane.showMessageDialog(view, mess);
+				// tắt bảng tgb mẫu( Model Type 1)
 				tableDataType1.setVisible(false);
 			}
 		});
@@ -309,14 +312,8 @@ public class Controller {
 					lineData1 = ""; // clean line data
 
 				}
-				try {
-					String mess = (tgb.loadToDB()) ? "create success" : " error, can't create";
-					JOptionPane.showMessageDialog(view, mess);
-
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(view, " error, can't create");
-					e1.printStackTrace();
-				}
+				String mess = (tgb.loadToDB()) ? "create success" : " error, can't create";
+				JOptionPane.showMessageDialog(view, mess);
 				tableDataType2.setVisible(false);
 			}
 		});
@@ -333,7 +330,6 @@ public class Controller {
 				int count = 0;
 				String lineData = "";
 				for (JTable table : listTable) {
-//					System.out.println(" colum thứ " + count++);
 					// tránh trường hợp cell đang bị edit thì không lấy được dữ liệu ( giống với vấn
 					// về bên clean data)
 					if (table.getCellEditor() != null) {
@@ -352,15 +348,10 @@ public class Controller {
 						}
 					}
 				}
-
-				try {
-					String mess = (tgb.loadToDB()) ? "create success" : " error, can't create";
-					JOptionPane.showMessageDialog(view, mess);
-
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(view, " error, can't create");
-					e1.printStackTrace();
-				}
+				// 7.1 Load to db
+				String mess = (tgb.loadToDB()) ? "create success" : " error, can't create";
+				// Bước 8 của create : xuất thông báo
+				JOptionPane.showMessageDialog(view, mess);
 				tableDataType3.setVisible(false);
 			}
 		});

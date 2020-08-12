@@ -40,7 +40,7 @@ public class ViewListFile extends JFrame {
 	public ViewListFile() {
 		setLayout(new BorderLayout());
 		setTitle("List File");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setPreferredSize(new Dimension(300, 150));
 		pack();
 		setVisible(false);
@@ -59,7 +59,7 @@ public class ViewListFile extends JFrame {
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-		btnExport = new JButton("Export");
+		btnExport = new JButton("Select");
 		btnCancel = new JButton("Cancel");
 		panel.add(btnExport);
 

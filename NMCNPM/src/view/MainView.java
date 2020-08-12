@@ -30,21 +30,6 @@ public class MainView extends JFrame {
 		return chooseTypeTGB;
 	}
 
-//	public void setTableDataType3(TableTGBType3 tableDataType3) {
-//		this.tableDataType3 = tableDataType3;
-//	}
-//
-//	public TableTGBType3 getTableDataType3() {
-//		return tableDataType3;
-//	}
-//
-//	public TableTGBType2 getTableDataType2() {
-//		return tableDataType2;
-//	}
-//
-//	public TableTGBType1 getTableDataType1() {
-//		return tableDataType1;
-//	}
 
 	private void gui() {
 		setTitle("Main View");
@@ -107,8 +92,8 @@ public class MainView extends JFrame {
 		// create menuItem
 		miOpen = new JMenuItem("Open TGB");
 		miCreate = new JMenuItem("Create New");
-		miImportFromTGB = new JMenuItem("ImportFromTGB");
-		miImportFromXlsx = new JMenuItem("Iport From XLSX");
+		miImportFromTGB = new JMenuItem("Import From TGB");
+		miImportFromXlsx = new JMenuItem("Import From XLSX");
 		miExport = new JMenuItem("Export");
 		// add menu item, menu
 		mFile.add(miCreate);
