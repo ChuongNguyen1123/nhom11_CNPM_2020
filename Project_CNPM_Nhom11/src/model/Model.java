@@ -69,53 +69,55 @@ public class Model {
 		this.alarmClockStatus = alarmClockStatus;
 	}
 
-	public List<String> getListNameTGB() throws SQLException {
-		List<String> listName = new ArrayList<String>();
-		String sqlConfig = "Select * from config ";
-		ResultSet rs = ConnectionDB.connection.createStatement().executeQuery(sqlConfig);
-		while (rs.next()) {
-			listName.add(rs.getString("Name_TGB"));
-		}
-
-		return listName;
-	}
-
-	public TGB getDataTGB(String name) throws SQLException {
-		String sqlConfig = "Select * from config where Name_TGB = ?";
-		PreparedStatement prs = ConnectionDB.connection.prepareStatement(sqlConfig);
-		prs.setString(1, name);
-		ResultSet rsConfig = prs.executeQuery();
-		rsConfig.next();
-//		System.out.println(rsConfig.getString(1));
-		String type = rsConfig.getString("Type_TGB");
-		TGB tgb = null;
-		if (type.contentEquals("Type 1")) {
-			tgb = new TGBType1(name);
-		}
-		if (type.contentEquals("Type 2")) {
-			tgb = new TGBType2(name);
-		}
-		if (type.contentEquals("Type 3")) {
-			tgb = new TGBType3(name);
-		}
-
-		tgb.setDefaultDisplay(rsConfig.getBoolean("Is_Default_Display"));
-		tgb.setHasAlarmClock(rsConfig.getBoolean("Has_Alarm_Clock"));
-		ResultSet rsTGB = ConnectionDB.connection.createStatement().executeQuery("Select *  From " + name);
-		while (rsTGB.next()) {
-			ResultSetMetaData rsmd = rsTGB.getMetaData();
-			int columnCount = rsmd.getColumnCount();
-			String data = "";
-			for (int i = 1; i <= columnCount; i++) {
-				data += rsTGB.getString(i) + "\t";
+	// bước 3.1 export, lấy danh sách tên các tgb từ data base
+		public List<String> getListNameTGB() throws SQLException {
+			List<String> listName = new ArrayList<String>();
+			String sqlConfig = "Select * from config ";
+			ResultSet rs = ConnectionDB.connection.createStatement().executeQuery(sqlConfig);
+			while (rs.next()) {
+				listName.add(rs.getString("Name_TGB"));
 			}
-			// xoÃ¡ dáº¥u \t cuá»‘i
-			data = data.substring(0, data.length() - 1);
-			tgb.addData(data);
+
+			return listName;
 		}
-//		System.out.println(tgb);
-		return tgb;
-	}
+		// lấy 1 tgb bằng name từ datab base
+		// 7.1 của export
+		public TGB getDataTGB(String name) throws SQLException {
+			String sqlConfig = "Select * from config where Name_TGB = ?";
+			PreparedStatement prs = ConnectionDB.connection.prepareStatement(sqlConfig);
+			prs.setString(1, name);
+			ResultSet rsConfig = prs.executeQuery();
+			rsConfig.next();
+//			System.out.println(rsConfig.getString(1));
+			String type = rsConfig.getString("Type_TGB");
+			TGB tgb = null;
+			if (type.contentEquals("Type 1")) {
+				tgb = new TGBType1(name);
+			}
+			if (type.contentEquals("Type 2")) {
+				tgb = new TGBType2(name);
+			}
+			if (type.contentEquals("Type 3")) {
+				tgb = new TGBType3(name);
+			}
+
+			tgb.setDefaultDisplay(rsConfig.getBoolean("Is_Default_Display"));
+			tgb.setHasAlarmClock(rsConfig.getBoolean("Has_Alarm_Clock"));
+			ResultSet rsTGB = ConnectionDB.connection.createStatement().executeQuery("Select *  From " + name);
+			while (rsTGB.next()) {
+				ResultSetMetaData rsmd = rsTGB.getMetaData();
+				int columnCount = rsmd.getColumnCount();
+				String data = "";
+				for (int i = 1; i <= columnCount; i++) {
+					data += rsTGB.getString(i) + "\t";
+				}
+				// xóa dấu cách cuối
+				data = data.substring(0, data.length() - 1);
+				tgb.addData(data);
+			}
+//			System.out.println(tgb);
+			return tgb;
+		}
 
 //	Lay cac dong cua table TGB
 	public ResultSet getTableTGB(String nameTGB) throws ClassNotFoundException, SQLException {
@@ -127,23 +129,23 @@ public class Model {
 		}
 
 //	Phuong thuc cac cau query update
-	public PreparedStatement editTKB(String nameTGB) throws ClassNotFoundException, SQLException {
+	public PreparedStatement editTKB(String type, String nameTGB) throws ClassNotFoundException, SQLException {
 		Connection connectEdit = cdb.getConnection();
 		String sqlEdit = "";
 		PreparedStatement preEdit = null ;
 //		update table dang 1
-		if(nameTGB.contains("1")) {
+		if(type.equals("Type 1")) {
 			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject1 = ?, NameSubject2 = ?, NameSubject3 = ?, NameSubject4 = ?, NameSubject5 = ?, IsMorning = ?";
 			preEdit = connectEdit.prepareStatement(sqlEdit);
 		}
 //		update table dang 2
-		if(nameTGB.contains("2")) {
-			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject1 = ?, RoomSubject1 = ?, NameSubject2 = ?, RoomSubject2 = ?, IsMorning = ?";
+		if(type.equals("Type 2")) {
+			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject1 = ?, RoomSubject1 = ?, NameSubject2 = ?, RoomSubject2 = ?, NameSubject3 = ?, RoomSubject3 = ?,NameSubject4 = ?, RoomSubject4 = ?,NameSubject5 = ?, RoomSubject5 = ?,NameSubject6 = ?, RoomSubject6 = ?,NameSubject7 = ?, RoomSubject7 = ?,IsMorning = ?";
 			preEdit = connectEdit.prepareStatement(sqlEdit);
 		}
 //		update table dang 3
-		if(nameTGB.contains("3")) {
-			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject = ?, TimeSubject = ?";
+		if(type.equals("Type 3")) {
+			sqlEdit = "UPDATE " + nameTGB + " SET DayOfWeek = ?, NameSubject1 = ?, TimeSubject1= ?, NameSubject2 = ?, TimeSubject2= ?, NameSubject3 = ?, TimeSubject3= ?, NameSubject4 = ?, TimeSubject4= ?, NameSubject5 = ?, TimeSubject5= ?, NameSubject6 = ?, TimeSubject6= ?,NameSubject7 = ?, TimeSubject7= ?";
 			preEdit = connectEdit.prepareStatement(sqlEdit);
 		}
 		
@@ -164,275 +166,298 @@ public class Model {
 		connectionRemove.close();
 	}
 
-// Bươc 9 của export
-	public boolean export(String filePath, String nameTGB) {
+	// Bươc 7 của export lấy ra tgb và export nó
+		public boolean export(String filePath, String nameTGB) {
 
-		try {
+			try {
 
-			TGB tgb;
-			tgb = getDataTGB(nameTGB);
-			tgb.export(filePath);
-		} catch (SQLException | IOException e) {
-			return false;
+				TGB tgb;
+				tgb = getDataTGB(nameTGB);
+				tgb.export(filePath);
+			} catch (SQLException | IOException e) {
+				return false;
+			}
+			return true;
+
 		}
-		return true;
 
-	}
+		// Bước 6 của import, lấy tgb từ File xls
+		public boolean importFromFilexlsx(File input) throws Exception {
+			TGBType2 tgb = getTGBFromXLSX(input);
 
-	// Bước 7 của import
-	public boolean importFromFilexlsx(File input) throws Exception {
-		TGBType2 tgb = getTGBFromXLSX(input);
+			return tgb.loadToDB();
 
-		return tgb.loadToDB();
+		}
+		// lấy 1 tgb từ file xlsx ( mặc định loại 2 )
+		private TGBType2 getTGBFromXLSX(File input) {
+			ArrayList<String> nameSubjects = new ArrayList<String>();
+			ArrayList<String> dayOfWeeks = new ArrayList<String>();
+			ArrayList<String> startTimes = new ArrayList<String>();
+			ArrayList<String> addressRooms = new ArrayList<String>();
+			TGBType2 tgb = new TGBType2("");
+			try {
+				// mở file xls .
+				FileInputStream fileStream = new FileInputStream(input);
 
-	}
+				HSSFWorkbook wb = new HSSFWorkbook(fileStream);
 
-	private TGBType2 getTGBFromXLSX(File input) {
-		ArrayList<String> nameSubjects = new ArrayList<String>();
-		ArrayList<String> dayOfWeeks = new ArrayList<String>();
-		ArrayList<String> startTimes = new ArrayList<String>();
-		ArrayList<String> addressRooms = new ArrayList<String>();
-		TGBType2 tgb = new TGBType2("");
-		try {
-			// import tá»« file xlsx lÃ  loáº¡i 2.
-			FileInputStream fileStream = new FileInputStream(input);
+				HSSFSheet sheet = wb.getSheetAt(0);
+				Iterator<Row> iterator = sheet.iterator();
+				// cell name at J7 ( mssv)
+				CellReference cellReference = new CellReference("I7");
+				Cell cellName = sheet.getRow(cellReference.getRow()).getCell(cellReference.getCol());
+				tgb.setName("SV_" + cellName.getStringCellValue());
 
-//			HSSFWorkbook wb = new HSSFFWorkbook(fileStream);
-			HSSFWorkbook wb = new HSSFWorkbook(fileStream);
+				while (iterator.hasNext()) {
+					Row nextRow = iterator.next();
+					// dữ liệu bắt đầu từ dòng 14
+					if (nextRow.getRowNum() >= 14) {
 
-//			HSSFFSheet sheet = wb.getSheetAt(0);
-			HSSFSheet sheet = wb.getSheetAt(0);
-			Iterator<Row> iterator = sheet.iterator();
-			// cell name at J7 ( mssv)
-			CellReference cellReference = new CellReference("I7");
-			Cell cellName = sheet.getRow(cellReference.getRow()).getCell(cellReference.getCol());
-			tgb.setName("SV_" + cellName.getStringCellValue());
-
-			while (iterator.hasNext()) {
-				Row nextRow = iterator.next();
-				// cháº¡y tá»« dÃ²ng 14
-				if (nextRow.getRowNum() >= 14) {
-
-					// Cá»™t G lÃ  cá»™t chá»©a tÃªn MÃ´n Há»�c
-					CellReference cellRNameSubject = new CellReference("G" + nextRow.getRowNum());
-					Cell cellNameSubject = sheet.getRow(cellRNameSubject.getRow()).getCell(cellRNameSubject.getCol());
-					// háº¿t thÃ¬ bá»� , dá»«ng Ä‘á»�c
-					if (cellNameSubject.getStringCellValue() == "") {
-						break;
+						// Cột g chứa tên của môn học
+						CellReference cellRNameSubject = new CellReference("G" + nextRow.getRowNum());
+						Cell cellNameSubject = sheet.getRow(cellRNameSubject.getRow()).getCell(cellRNameSubject.getCol());
+						// nếu lấy tên môn học mà rỗng thì break , kết thúc đọc file
+						if (cellNameSubject.getStringCellValue() == "") {
+							break;
+						}
+						nameSubjects.add(cellNameSubject.getStringCellValue());
+						// Cột AA là cột chứa thứ trong tuần  ( DOW)
+						CellReference cellRDOWSubject = new CellReference("AA" + nextRow.getRowNum());
+						Cell cellDOWSubject = sheet.getRow(cellRDOWSubject.getRow()).getCell(cellRDOWSubject.getCol());
+						dayOfWeeks.add(cellDOWSubject.getStringCellValue());
+						// Cột AC là cột chứa tiết bắt đầu
+						CellReference cellRStartTime = new CellReference("AC" + nextRow.getRowNum());
+						Cell cellStartTime = sheet.getRow(cellRStartTime.getRow()).getCell(cellRStartTime.getCol());
+						startTimes.add(cellStartTime.getStringCellValue());
+						// Cột AI là cột chứa Phòng
+						CellReference cellRRoom = new CellReference("AI" + nextRow.getRowNum());
+						Cell cellRoom = sheet.getRow(cellRRoom.getRow()).getCell(cellRRoom.getCol());
+						addressRooms.add(cellRoom.getStringCellValue());
 					}
-					nameSubjects.add(cellNameSubject.getStringCellValue());
-					// Cá»™t AA lÃ  cá»™t chá»©a thá»© ( DOW )
-					CellReference cellRDOWSubject = new CellReference("AA" + nextRow.getRowNum());
-					Cell cellDOWSubject = sheet.getRow(cellRDOWSubject.getRow()).getCell(cellRDOWSubject.getCol());
-					dayOfWeeks.add(cellDOWSubject.getStringCellValue());
-					// Cá»™t AC lÃ  cá»™t chá»©a tiáº¿t báº¯t Ä‘áº§u
-					CellReference cellRStartTime = new CellReference("AC" + nextRow.getRowNum());
-					Cell cellStartTime = sheet.getRow(cellRStartTime.getRow()).getCell(cellRStartTime.getCol());
-					startTimes.add(cellStartTime.getStringCellValue());
-					// Cá»™t AI lÃ  cá»™t chá»©a tÃªn PhÃ²ng
-					CellReference cellRRoom = new CellReference("AI" + nextRow.getRowNum());
-					Cell cellRoom = sheet.getRow(cellRRoom.getRow()).getCell(cellRRoom.getCol());
-					addressRooms.add(cellRoom.getStringCellValue());
+
 				}
+				// đọc xong, đóng file
+				wb.close();
+				fileStream.close();
 
-			}
-
-			wb.close();
-			fileStream.close();
-//			for (int i = 0; i < nameSubjects.size(); i++) {
-//				System.out.println(dayOfWeeks.get(i) + "\t" + nameSubjects.get(i) + " \t" + addressRooms.get(i) + "\t"
-//						+ startTimes.get(i) + "\t");
-//			}
-
-			// chuyá»ƒn Ä‘á»•i thá»©
-			for (int i = 0; i < dayOfWeeks.size(); i++) {
-				try {
-					dayOfWeeks.set(i, (Integer.parseInt(dayOfWeeks.get(i)) - 1) + "");
-				} catch (Exception e) {
-					dayOfWeeks.set(i, "7");
+				// chuyển đổi ngày tháng trong tuần (1-7 )
+				for (int i = 0; i < dayOfWeeks.size(); i++) {
+					try {
+						dayOfWeeks.set(i, (Integer.parseInt(dayOfWeeks.get(i)) - 1) + "");
+					} catch (Exception e) {
+						dayOfWeeks.set(i, "7");
+					}
 				}
-			}
-			ArrayList<String> nameSubjectsC = (ArrayList<String>) nameSubjects.clone();
-			ArrayList<String> dayOfWeeksC = (ArrayList<String>) dayOfWeeks.clone();
-			ArrayList<String> startTimesC = (ArrayList<String>) startTimes.clone();
-			ArrayList<String> addressRoomsC = (ArrayList<String>) addressRooms.clone();
-			ArrayList<SupportTGBXLS> li = new ArrayList<SupportTGBXLS>();
-			for (int i = 0; i < dayOfWeeks.size(); i++) {
-				SupportTGBXLS sp = new SupportTGBXLS(dayOfWeeksC.get(0), nameSubjectsC.get(0), addressRoomsC.get(0),
-						startTimesC.get(0));
-				li.add(sp);
-				nameSubjectsC.remove(0);
-				dayOfWeeksC.remove(0);
-				startTimesC.remove(0);
-				addressRoomsC.remove(0);
-			}
-			ArrayList<SupportTGBXLS> li2 = (ArrayList<SupportTGBXLS>) li.clone();
-			ArrayList<Data2> listData2 = new ArrayList<Data2>();
-			int step = li2.size();
-			for (int i = 0; i < step; i++) {
-				if (i + 1 < step - 1) { // náº¿u cÃ²n trong táº§m thÃ¬ cá»© gá»™p 2 cÃ¡i sÃ¡t nhau thÃ nh 1
-					Data2 data = li.get(i).megeData(li.get(i + 1));
-					// mege thÃ nh cÃ´ng
-					if (data != null) {
+				// tạo clone các list tránh khi duyệt mà bị thay đổi dữ liệu ( phần remove(0))
+				ArrayList<String> nameSubjectsC = (ArrayList<String>) nameSubjects.clone();
+				ArrayList<String> dayOfWeeksC = (ArrayList<String>) dayOfWeeks.clone();
+				ArrayList<String> startTimesC = (ArrayList<String>) startTimes.clone();
+				ArrayList<String> addressRoomsC = (ArrayList<String>) addressRooms.clone();
+				// li chỉ là danh sách các  supportTGBXLS thôi, dùng nó làm tền đề để tinh chỉnh thứ tự à add vào TGB
+				ArrayList<SupportTGBXLS> li = new ArrayList<SupportTGBXLS>();
+				for (int i = 0; i < dayOfWeeks.size(); i++) {
+					SupportTGBXLS sp = new SupportTGBXLS(dayOfWeeksC.get(0), nameSubjectsC.get(0), addressRoomsC.get(0),
+							startTimesC.get(0));
+					li.add(sp);
+					nameSubjectsC.remove(0);
+					dayOfWeeksC.remove(0);
+					startTimesC.remove(0);
+					addressRoomsC.remove(0);
+				}
+				// li2 là clone của li, đề phòng bị thay đổi khi duyệt
+				ArrayList<SupportTGBXLS> li2 = (ArrayList<SupportTGBXLS>) li.clone();
+				ArrayList<Data2> listData2 = new ArrayList<Data2>();
+				int step = li2.size();
+				for (int i = 0; i < step; i++) {
+					if (i + 1 < step - 1) { // các môn học cùng tên nằm sát nhau ( khác thứ tiết ) thì  hợp lại thành 1
+						Data2 data = li.get(i).megeData(li.get(i + 1));
+						// mege thÃ nh cÃ´ng
+						if (data != null) {
+							listData2.add(data);
+							i++; // nhảy thâm 1 bậc
+							continue;
+						}
+						// mege tháº¥t báº¡i ( data == null)
+						data = li.get(i).covertData();
 						listData2.add(data);
-						i++; // nháº£y thÃªm 1 bÆ°á»›c
 						continue;
+
 					}
-					// mege tháº¥t báº¡i ( data == null)
-					data = li.get(i).covertData();
-					listData2.add(data);
-					continue;
+					listData2.add(li.get(i).covertData());
 
 				}
-				listData2.add(li.get(i).covertData());
+
+				tgb.setListData(listData2);
+				System.out.println(tgb);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return tgb;
+		}
+
+		// Lớp hỗ trợ cho đọc từ file xls
+		private class SupportTGBXLS {
+			String dayOfWeek;
+			String subject;
+			String room;
+			String startTime;
+
+			public SupportTGBXLS(String dayOfWeek, String subject, String room, String startTime) {
+				super();
+				this.dayOfWeek = dayOfWeek;
+				this.subject = subject;
+				this.room = room;
+				this.startTime = startTime;
+			}
+
+			@Override
+			public boolean equals(Object obj) {
+
+				if (obj instanceof SupportTGBXLS) {
+					SupportTGBXLS another = (SupportTGBXLS) obj;
+					return Integer.parseInt(startTime) == Integer.parseInt(another.startTime);
+				}
+				return false;
+			}
+
+			public Data2 megeData(SupportTGBXLS sp2) {
+				boolean isMorning = (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("4"));
+				// 2 cái cùng ngày thì phải phân biệt thứ tự
+				if (dayOfWeek.equalsIgnoreCase(sp2.dayOfWeek)) {
+					if (Integer.parseInt(startTime) < Integer.parseInt(sp2.startTime)) {
+						return new Data2(dayOfWeek, subject, room, sp2.subject, sp2.room, isMorning);
+					} else {
+						return new Data2(dayOfWeek, sp2.subject, sp2.room, subject, room, isMorning);
+
+					}
+				} else { // hai cái không cùng ngày, lấy cái sau
+					return null;
+				}
 
 			}
-//			for (Data2 sp : listData2) {
-//				System.out.println(sp);
-//
-//			}
 
-			tgb.setListData(listData2);
-			System.out.println(tgb);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return tgb;
-	}
+			public Data2 covertData() {
+				boolean isMorning = (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("4"));
+				if (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("7")) {
 
-	// lá»›p há»— trá»£ Ä‘á»�c tá»« xls
-	private class SupportTGBXLS {
-		String dayOfWeek;
-		String subject;
-		String room;
-		String startTime;
-
-		public SupportTGBXLS(String dayOfWeek, String subject, String room, String startTime) {
-			super();
-			this.dayOfWeek = dayOfWeek;
-			this.subject = subject;
-			this.room = room;
-			this.startTime = startTime;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-
-			if (obj instanceof SupportTGBXLS) {
-				SupportTGBXLS another = (SupportTGBXLS) obj;
-				return Integer.parseInt(startTime) == Integer.parseInt(another.startTime);
-			}
-			return false;
-		}
-
-		public Data2 megeData(SupportTGBXLS sp2) {
-			boolean isMorning = (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("4"));
-			// 2 cÃ¡i cÃ¹ng ngÃ y -> phÃ¢n biá»‡t thá»© tá»±
-			if (dayOfWeek.equalsIgnoreCase(sp2.dayOfWeek)) {
-				if (Integer.parseInt(startTime) < Integer.parseInt(sp2.startTime)) {
-					return new Data2(dayOfWeek, subject, room, sp2.subject, sp2.room, isMorning);
+					return new Data2(dayOfWeek, subject, room, "", "", isMorning);
 				} else {
-					return new Data2(dayOfWeek, sp2.subject, sp2.room, subject, room, isMorning);
-
-				}
-			} else {// hai cÃ¡i khÃ´ng cÃ¹ng ngÃ y -> láº¥y cÃ¡i Ä‘áº§u
-				return null;
-			}
-
-		}
-
-		public Data2 covertData() {
-			boolean isMorning = (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("4"));
-			if (startTime.equalsIgnoreCase("1") || startTime.equalsIgnoreCase("7")) {
-
-				return new Data2(dayOfWeek, subject, room, "", "", isMorning);
-			} else {
-				return new Data2(dayOfWeek, "", "", subject, room, isMorning);
-			}
-		}
-
-		@Override
-		public String toString() {
-			return dayOfWeek + "\t" + subject + "\t" + room + "\t" + startTime;
-		}
-
-	}
-
-	// Bước 7 của import
-	public boolean importFromFiletgb(File input) throws Exception {
-		TGB tgb = getTGBFromFiletgb(input);
-		return tgb.loadToDB();
-	}
-
-	private TGB getTGBFromFiletgb(File input) throws Exception {
-		String name = "";
-		TGB tgb = null; // táº¡o 1 tgb Ä‘á»ƒ lÆ°u vÃ o
-		BufferedReader fileReader = new BufferedReader(new FileReader(input));
-		String line = "";
-		String[] split;
-		while ((line = fileReader.readLine()) != null) {
-			split = line.split("\t");
-
-			if (split[0].equalsIgnoreCase("@Name")) {
-				name = split[1];
-			}
-			if (split[0].equalsIgnoreCase("@Type")) {
-				if (split[1].equalsIgnoreCase("type 1")) {
-					tgb = new TGBType1(name);
-				}
-				if (split[1].equalsIgnoreCase("type 2")) {
-					tgb = new TGBType2(name);
-				}
-				if (split[1].equalsIgnoreCase("type 3")) {
-					tgb = new TGBType3(name);
-				}
-			}
-			if (split[0].equalsIgnoreCase("@has Alarm clock")) {
-				tgb.setHasAlarmClock((Boolean.parseBoolean(split[1])));
-			}
-			if (split[0].equalsIgnoreCase("@is Deafult display")) {
-				tgb.setDefaultDisplay(Boolean.parseBoolean(split[1]));
-			}
-			if (split[0].equalsIgnoreCase("@Data")) {
-				while ((line = fileReader.readLine()) != null) {
-					tgb.addData(line);
+					return new Data2(dayOfWeek, "", "", subject, room, isMorning);
 				}
 			}
 
-		}
-		System.out.println(tgb);
-		fileReader.close();
-		return tgb;
-	}
-
-	public Time getTimeType3(String name) {
-		return null;
-	}
-
-	public void runAlarmClock() {
-
-	}
-
-	public void showDefaultTKB() {
-
-	}
-
-	public TGB getDataModel(TableModel def1, TableModel def2) {
-		for (int i = 0; i < 5; i++) {
-			System.out.println();
-			for (int j = 0; j < 7; j++) {
-				System.out.print(def1.getValueAt(i, j) + "\t");
+			@Override
+			public String toString() {
+				return dayOfWeek + "\t" + subject + "\t" + room + "\t" + startTime;
 			}
+
 		}
-		System.out.println("===========");
-		for (int i = 0; i < 5; i++) {
-			System.out.println();
-			for (int j = 0; j < 7; j++) {
-				System.out.print(def2.getValueAt(i, j) + "\t");
+		// Bước 6 của import, lấy tgb từ File tgb
+		public boolean importFromFiletgb(File input)  {
+			TGB tgb = getTGBFromFiletgb(input);
+			return tgb.loadToDB();
+		}
+		
+		private TGB getTGBFromFiletgb(File input)  {
+			// lúc trước để null nhưng nếu vậy thì không xử lý được trình trạng nhập tên file sai, cách này chữa cháy thôi, vì lớp abstract dùng vầy là quá sai
+			TGB tgb = new TGB() {
+				
+				@Override
+				protected void insertData() throws SQLException {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void export(String filePath) throws IOException {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				void editTKB(TGB tbkEdited) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void addData(String lineData) {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			try {
+			String name = "";
+			BufferedReader fileReader = new BufferedReader(new FileReader(input));
+			String line = "";
+			String[] split;
+			while ((line = fileReader.readLine()) != null) {
+				split = line.split("\t");
+
+				if (split[0].equalsIgnoreCase("@Name")) {
+					name = split[1];
+				}
+				if (split[0].equalsIgnoreCase("@Type")) {
+					if (split[1].equalsIgnoreCase("type 1")) {
+						tgb = new TGBType1(name);
+					}
+					if (split[1].equalsIgnoreCase("type 2")) {
+						tgb = new TGBType2(name);
+					}
+					if (split[1].equalsIgnoreCase("type 3")) {
+						tgb = new TGBType3(name);
+					}
+				}
+				if (split[0].equalsIgnoreCase("@has Alarm clock")) {
+					tgb.setHasAlarmClock((Boolean.parseBoolean(split[1])));
+				}
+				if (split[0].equalsIgnoreCase("@is Deafult display")) {
+					tgb.setDefaultDisplay(Boolean.parseBoolean(split[1]));
+				}
+				if (split[0].equalsIgnoreCase("@Data")) {
+					while ((line = fileReader.readLine()) != null) {
+						tgb.addData(line);
+					}
+				}
+
 			}
+			System.out.println(tgb);
+			fileReader.close();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			return tgb;
 		}
-		return null;
-	}
+
+		public Time getTimeType3(String name) {
+			return null;
+		}
+
+		public void runAlarmClock() {
+
+		}
+
+		public void showDefaultTKB() {
+
+		}
+
+		public TGB getDataModel(TableModel def1, TableModel def2) {
+			for (int i = 0; i < 5; i++) {
+				System.out.println();
+				for (int j = 0; j < 7; j++) {
+					System.out.print(def1.getValueAt(i, j) + "\t");
+				}
+			}
+			System.out.println("===========");
+			for (int i = 0; i < 5; i++) {
+				System.out.println();
+				for (int j = 0; j < 7; j++) {
+					System.out.print(def2.getValueAt(i, j) + "\t");
+				}
+			}
+			return null;
+		}
 
 	public static void main(String[] args) throws Exception {
 		File f = new File("resource/report3.xls");

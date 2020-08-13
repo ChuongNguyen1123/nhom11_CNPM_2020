@@ -54,9 +54,9 @@ public class TGBType3 extends TGB {
 	@Override
 	public void export(String filePath) throws IOException {
 		// tạo file
-		FileOutputStream f = new FileOutputStream(filePath);
+		FileOutputStream f = new FileOutputStream(filePath + ".tgb");
 		// đọc file
-		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filePath+".tgb"));
 		writer.write("@name" + "\t" + name + "\n");
 		writer.write("@type" + "\t" + "type 3" + "\n");
 		writer.write("@has Alarm clock" + "\t" + hasAlarmClock + "\n");

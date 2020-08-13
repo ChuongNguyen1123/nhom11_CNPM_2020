@@ -103,6 +103,8 @@ public class ViewTableTGB extends JFrame {
 		model.addColumn("Chủ nhật");
 		
 		
+		
+		
 		for (int i = 0; i < 8; i++) {
 //			 add row, số row sẽ co 8 row danh so tu 0 den 7
 			model.addRow(new Object[0]);
@@ -149,6 +151,18 @@ public class ViewTableTGB extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
+	}
+	
+	public void setValueRowTable(int row, String caHoc, String thu2, String thu3, String thu4, String thu5, String thu6, String thu7, String cn) {
+		model.addRow(new Object[0]);
+		model.setValueAt(caHoc, row, 0);
+		model.setValueAt(thu2, row, 1);
+		model.setValueAt(thu3, row, 2);
+		model.setValueAt(thu4, row, 3);
+		model.setValueAt(thu5, row, 4);
+		model.setValueAt(thu6, row, 5);
+		model.setValueAt(thu7, row, 6);
+		model.setValueAt(cn, row, 7);
 	}
 
 	public JTable getTable() {
